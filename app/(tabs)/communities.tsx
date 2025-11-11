@@ -8,6 +8,7 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
+import { router } from 'expo-router';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuthStore } from '@/lib/stores/authStore';
 import { useCommunityStore, Community } from '@/lib/stores/communityStore';
@@ -167,6 +168,10 @@ export default function CommunitiesScreen() {
     return myCommunities.some((c) => c.id === communityId);
   };
 
+  const handleCommunityPress = (communityId: string) => {
+    router.push(`/community/${communityId}/about`);
+  };
+
   const displayedCommunities = showMyCommunities ? myCommunities : communities;
 
   const renderEmpty = () => (
@@ -225,6 +230,7 @@ export default function CommunitiesScreen() {
             isMember={isMember(item.id)}
             onJoin={handleJoin}
             onLeave={handleLeave}
+            onPress={handleCommunityPress}
             loading={loadingCommunityId === item.id}
           />
         )}

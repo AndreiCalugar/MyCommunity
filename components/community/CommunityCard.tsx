@@ -32,17 +32,17 @@ export const CommunityCard: React.FC<CommunityCardProps> = ({
     border: isDark ? '#4E5058' : '#E0E0E0',
   };
 
+  const handleCardPress = () => {
+    if (onPress) {
+      onPress(community.id);
+    }
+  };
+
   const handleButtonPress = () => {
     if (isMember && onLeave) {
       onLeave(community.id);
     } else if (!isMember && onJoin) {
       onJoin(community.id);
-    }
-  };
-
-  const handleCardPress = () => {
-    if (onPress) {
-      onPress(community.id);
     }
   };
 
