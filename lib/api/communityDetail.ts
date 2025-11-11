@@ -37,19 +37,10 @@ export const fetchCommunityById = async (communityId: string): Promise<Community
 export const fetchCommunityMembers = async (
   communityId: string
 ): Promise<CommunityMember[]> => {
-  const { data, error } = await supabase
+  // Fetch community members
+  const { data: members, error } = await supabase
     .from('community_members')
-    .select(`
-      id,
-      user_id,
-      role,
-      joined_at,
-      profiles:user_id (
-        full_name,
-        email,
-        avatar_url
-      )
-    `)
+    .select('id, user_id, role, joined_at')
     .eq('community_id', communityId)
     .order('joined_at', { ascending: true });
 
@@ -58,20 +49,29 @@ export const fetchCommunityMembers = async (
     throw error;
   }
 
-  // Transform data to match our interface
-  const members = data?.map((item: any) => ({
-    id: item.id,
-    user_id: item.user_id,
-    role: item.role,
-    joined_at: item.joined_at,
-    profile: {
-      full_name: item.profiles?.full_name || 'Unknown',
-      email: item.profiles?.email || '',
-      avatar_url: item.profiles?.avatar_url,
-    },
-  })) || [];
+  if (!members || members.length === 0) {
+    return [];
+  }
 
-  return members;
+  // Fetch profiles for all user_ids
+  const userIds = [...new Set(members.map((m) => m.user_id))];
+  const { data: profiles } = await supabase
+    .from('profiles')
+    .select('id, full_name, email, avatar_url')
+    .in('id', userIds);
+
+  // Create a profile map for quick lookup
+  const profileMap = new Map(profiles?.map((p) => [p.id, p]) || []);
+
+  // Merge members with profiles
+  return members.map((member) => ({
+    ...member,
+    profile: profileMap.get(member.user_id) || {
+      full_name: 'Unknown',
+      email: '',
+      avatar_url: undefined,
+    },
+  }));
 };
 
 /**
