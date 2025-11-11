@@ -44,22 +44,16 @@ export default function CommunityAboutScreen() {
 
   const loadCommunityData = async () => {
     if (!params.id) {
-      console.log('About: No community ID provided');
       setLoading(false);
       return;
     }
 
-    console.log('About: Starting to load community data for:', params.id);
     try {
       setLoading(true);
-      console.log('About: Fetching community and membership...');
       const [communityData, membershipStatus] = await Promise.all([
-        fetchCommunityById(params.id),
-        user ? checkMembership(user.id, params.id) : Promise.resolve(false),
+        fetchCommunityById(params.id as string),
+        user ? checkMembership(user.id, params.id as string) : Promise.resolve(false),
       ]);
-
-      console.log('About: Got community data:', communityData?.name);
-      console.log('About: Membership status:', membershipStatus);
 
       if (communityData) {
         setCommunity(communityData);
@@ -67,23 +61,17 @@ export default function CommunityAboutScreen() {
 
         // Fetch admin info
         if (communityData.admin_id) {
-          console.log('About: Fetching admin data...');
           const adminData = await fetchCommunityAdmin(communityData.admin_id);
-          console.log('About: Got admin data:', adminData?.full_name);
           setAdmin(adminData);
         }
       }
     } catch (error: any) {
       console.error('Error loading community:', error);
-      console.error('Error code:', error.code);
-      console.error('Error message:', error.message);
-      console.error('Error details:', JSON.stringify(error, null, 2));
       Alert.alert(
         'Error Loading Community',
         error.message || 'Failed to load community details. Please try again.'
       );
     } finally {
-      console.log('About: Setting loading to false');
       setLoading(false);
     }
   };

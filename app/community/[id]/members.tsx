@@ -35,22 +35,16 @@ export default function CommunityMembersScreen() {
 
   const loadMembers = async () => {
     if (!params.id) {
-      console.log('Members: No community ID provided');
       setLoading(false);
       return;
     }
 
-    console.log('Members: Starting to load members for community:', params.id);
     try {
       setLoading(true);
-      const membersData = await fetchCommunityMembers(params.id);
-      console.log('Members: Fetched members:', membersData.length);
+      const membersData = await fetchCommunityMembers(params.id as string);
       setMembers(membersData);
     } catch (error: any) {
       console.error('Error loading members:', error);
-      console.error('Error code:', error.code);
-      console.error('Error message:', error.message);
-      console.error('Full error:', JSON.stringify(error, null, 2));
       // Check if it's a permission error (not a member)
       if (error.message?.includes('permission') || error.code === 'PGRST301') {
         Alert.alert(
@@ -58,10 +52,9 @@ export default function CommunityMembersScreen() {
           'You need to join this community to view members. Go back and tap the Join button.'
         );
       } else {
-        Alert.alert('Error', 'Failed to load community members: ' + (error.message || 'Unknown error'));
+        Alert.alert('Error', 'Failed to load community members');
       }
     } finally {
-      console.log('Members: Setting loading to false');
       setLoading(false);
     }
   };

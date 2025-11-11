@@ -1,15 +1,30 @@
 import { Tabs, useLocalSearchParams } from 'expo-router';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { Ionicons } from '@expo/vector-icons';
+import { fetchCommunityById } from '@/lib/api/communityDetail';
 
 export default function CommunityDetailLayout() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const params = useLocalSearchParams<{ id: string }>();
+  const [communityName, setCommunityName] = useState<string>('Community');
 
-  console.log('Layout: Received params:', params);
-  console.log('Layout: Community ID:', params.id);
+  useEffect(() => {
+    const loadCommunityName = async () => {
+      if (params.id) {
+        try {
+          const community = await fetchCommunityById(params.id as string);
+          if (community) {
+            setCommunityName(community.name);
+          }
+        } catch (error) {
+          console.error('Error loading community name:', error);
+        }
+      }
+    };
+    loadCommunityName();
+  }, [params.id]);
 
   const colors = {
     background: isDark ? '#1E1F22' : '#FFFFFF',
@@ -30,6 +45,7 @@ export default function CommunityDetailLayout() {
           backgroundColor: colors.background,
         },
         headerTintColor: isDark ? '#FFFFFF' : '#060607',
+        headerTitle: communityName,
       }}
     >
       <Tabs.Screen
