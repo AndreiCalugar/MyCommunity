@@ -9,6 +9,7 @@ interface EventCalendarProps {
   selectedDate: string;
   onDateSelect: (date: string) => void;
   onRSVP?: (eventId: string, status: 'going' | 'maybe' | 'not_going') => void;
+  onEventPress?: (event: Event) => void;
   colorScheme: 'light' | 'dark';
 }
 
@@ -17,6 +18,7 @@ export const EventCalendar: React.FC<EventCalendarProps> = ({
   selectedDate,
   onDateSelect,
   onRSVP,
+  onEventPress,
   colorScheme,
 }) => {
   const isDark = colorScheme === 'dark';
@@ -132,6 +134,7 @@ export const EventCalendar: React.FC<EventCalendarProps> = ({
               key={event.id}
               event={event}
               colorScheme={colorScheme}
+              onPress={onEventPress ? () => onEventPress(event) : undefined}
               onRSVP={onRSVP ? (status) => onRSVP(event.id, status) : undefined}
             />
           ))

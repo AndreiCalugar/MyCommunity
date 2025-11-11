@@ -8,7 +8,7 @@ import {
   Alert,
   Pressable,
 } from 'react-native';
-import { useGlobalSearchParams, useFocusEffect } from 'expo-router';
+import { useGlobalSearchParams, useFocusEffect, router } from 'expo-router';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuthStore } from '@/lib/stores/authStore';
 import {
@@ -162,6 +162,7 @@ export default function CommunityEventsScreen() {
     <EventCard
       event={item}
       colorScheme={colorScheme}
+      onPress={() => router.push(`/event/${item.id}?communityId=${params.id}`)}
       onRSVP={(status) => handleRSVP(item.id, status)}
     />
   );
@@ -251,6 +252,7 @@ export default function CommunityEventsScreen() {
           selectedDate={selectedDate}
           onDateSelect={setSelectedDate}
           onRSVP={handleRSVP}
+          onEventPress={(event) => router.push(`/event/${event.id}?communityId=${params.id}`)}
           colorScheme={colorScheme}
         />
       )}
