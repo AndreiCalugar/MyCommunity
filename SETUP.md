@@ -115,6 +115,7 @@ Then press:
 ## ✅ Phase 2: Communities List - COMPLETE!
 
 Implemented features:
+
 - ✅ Communities list screen with beautiful card UI
 - ✅ Join/leave communities with confirmation dialogs
 - ✅ Filter between "All Communities" and "My Communities"
@@ -127,7 +128,9 @@ Implemented features:
 ## Testing Phase 2
 
 ### 1. Add Sample Communities
+
 Run the seed SQL in your Supabase SQL Editor:
+
 1. Go to your Supabase dashboard → **SQL Editor**
 2. Copy the contents of `supabase/seeds.sql`
 3. Paste and click "Run"
@@ -135,6 +138,7 @@ Run the seed SQL in your Supabase SQL Editor:
 This adds 10 sample communities with images and descriptions.
 
 ### 2. Test Communities Features
+
 1. **View Communities**: See all communities in the Communities tab
 2. **Join Community**: Tap "Join" button on any community card
 3. **See Member Count Update**: Watch the member count increment
@@ -146,6 +150,7 @@ This adds 10 sample communities with images and descriptions.
 ## What's Next - Phase 3: Community Detail & About
 
 The next phase will implement:
+
 - Community detail navigation (tap on card)
 - About tab with full description
 - Member list
