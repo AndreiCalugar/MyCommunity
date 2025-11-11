@@ -360,7 +360,93 @@ Major UX enhancements applied:
    - Tap any date to see that day's events
    - Switch back to "List" view anytime
 
-## What's Next - Phase 6: Future Enhancements
+---
+
+## ✅ Phase 7A: Resources Tab - COMPLETED
+
+### What was built:
+
+1. **Resources Database & API**:
+
+   - Created `resources` table with RLS policies
+   - Link and file resource types
+   - Category system (Documents, Videos, Articles, Tools, Guides, Other)
+   - Full CRUD operations
+   - File storage integration
+
+2. **Resources Tab UI**:
+
+   - Added new "Resources" tab in community view
+   - ResourceCard component with file type icons
+   - AddResourceModal with tabbed interface (Link/File)
+   - FAB button to add resources
+   - Delete functionality for creators/admins
+
+3. **Features**:
+   - Add links with URL, title, description
+   - Upload files up to 10MB
+   - Auto-open links and files on tap
+   - Beautiful file type detection and icons
+   - Category badges and filtering
+   - Creator profiles on resources
+
+### Setup Instructions:
+
+1. **Run the SQL schema**:
+
+   ```sql
+   -- In Supabase SQL Editor, run:
+   supabase/resources-schema.sql
+   ```
+
+2. **Create Storage Bucket**:
+
+   - Go to Supabase Dashboard → Storage
+   - Create a new bucket named: `community-resources`
+   - **Make it PUBLIC** (enable public access)
+   - Set file size limit: 10MB
+   - Allowed types: All file types
+
+3. **Update RLS Policies** (if needed):
+   - The schema already includes policies for member access
+   - Admins and moderators can create resources
+   - Creators can delete their own resources
+
+### Testing Resources:
+
+1. **Add a Link**:
+
+   - Go to any community you're a member of
+   - Tap Resources tab
+   - Tap the + FAB button
+   - Select "Link" tab
+   - Fill in title, URL, description
+   - Optionally select a category
+   - Tap "Add Link"
+
+2. **Upload a File**:
+
+   - Tap + button
+   - Select "File" tab
+   - Tap to select a file from device
+   - Add title and description
+   - Select category (optional)
+   - Tap "Upload File"
+
+3. **View Resources**:
+
+   - See all links and files
+   - Notice different icons for file types (PDF, image, video, etc.)
+   - Tap any resource to open it
+   - See creator info and upload date
+
+4. **Delete Resources**:
+   - If you created a resource, you'll see a trash icon
+   - Tap to delete with confirmation
+
+---
+
+## What's Next - Phase 7B & 7C: Advanced Features
 
 Additional features that could be added:
 
