@@ -1,5 +1,6 @@
 import { supabase } from '../supabase';
 import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
 
 export interface Post {
   id: string;
@@ -271,18 +272,31 @@ export const deleteComment = async (commentId: string): Promise<void> => {
  */
 const uploadPostImage = async (imageUri: string, userId: string): Promise<string> => {
   try {
-    // Convert image URI to blob
-    const response = await fetch(imageUri);
-    const blob = await response.blob();
+    // Read file as base64
+    const base64 = await FileSystem.readAsStringAsync(imageUri, {
+      encoding: FileSystem.EncodingType.Base64,
+    });
 
     // Generate unique filename
-    const fileExt = imageUri.split('.').pop() || 'jpg';
+    const fileExt = imageUri.split('.').pop()?.split('?')[0] || 'jpg';
     const fileName = `${userId}/${Date.now()}.${fileExt}`;
+
+    // Convert base64 to Uint8Array for React Native
+    const decode = (str: string): Uint8Array => {
+      const binary = atob(str);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) {
+        bytes[i] = binary.charCodeAt(i);
+      }
+      return bytes;
+    };
+
+    const arrayBuffer = decode(base64);
 
     // Upload to Supabase Storage
     const { data, error } = await supabase.storage
       .from('post-images')
-      .upload(fileName, blob, {
+      .upload(fileName, arrayBuffer.buffer, {
         contentType: `image/${fileExt}`,
         upsert: false,
       });
@@ -317,7 +331,7 @@ export const pickImage = async (): Promise<string | null> => {
 
   // Pick image
   const result = await ImagePicker.launchImageLibraryAsync({
-    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    mediaTypes: ImagePicker.MediaType.Images,
     allowsEditing: true,
     aspect: [4, 3],
     quality: 0.8,
