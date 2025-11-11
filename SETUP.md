@@ -237,13 +237,87 @@ Run the profile enhancement SQL:
    - Role badges (Admin/Moderator)
 3. **Beautiful Layout**: Cards have improved spacing and icons
 
-## What's Next - Phase 5: Chat or Events
+## ✅ Phase 5: Chat & Events - COMPLETE!
 
-The next phase could implement:
+Implemented features:
 
-- **Option A:** Real-time chat for community members
-- **Option B:** Events & Calendar system
-- **Option C:** Both together!
+- ✅ Real-time chat for community members
+- ✅ Message history with pagination
+- ✅ Delete own messages
+- ✅ Auto-scroll to latest messages
+- ✅ Create events with date, time, location, and max attendees
+- ✅ RSVP system (Going/Maybe/Not Going)
+- ✅ Attendee counts and lists
+- ✅ Beautiful event cards with icons
+- ✅ Date-time picker for event creation
+- ✅ Only admins/moderators can create events
+
+## Testing Phase 5
+
+### 1. Set Up Database for Chat & Events
+
+Run the chat and events schema:
+
+1. Go to your Supabase dashboard → **SQL Editor**
+2. Copy the contents of `supabase/chat-events-schema.sql`
+3. Paste and click "Run"
+
+This creates:
+- `chat_messages` table for real-time messaging
+- `events` table for community events
+- `event_rsvps` table for RSVP tracking
+- RLS policies for security
+- Real-time subscriptions for chat
+
+### 2. Test Chat Features
+
+1. **Navigate**: Go to any community you're a member of → **Chat tab**
+2. **Send Messages**: Type a message and tap send
+3. **Real-time Updates**: Open on 2 devices, send from one, see it appear on the other instantly
+4. **Delete Messages**: Long-press your own messages to delete them
+5. **Auto-scroll**: New messages automatically scroll into view
+6. **View History**: Scroll up to see older messages
+
+### 3. Test Events Features
+
+1. **Navigate**: Go to any community → **Events tab**
+2. **View Events**: See all upcoming events
+3. **Create Event**: (If you're an admin/moderator)
+   - Tap the + FAB button
+   - Fill in event details (title, description, date/time, location, max attendees)
+   - Tap "Create Event"
+4. **RSVP**: Tap the RSVP buttons on event cards:
+   - ✓ Going (green)
+   - ? Maybe (yellow)
+   - ✗ Not Going (red)
+5. **Attendee Counts**: See how many people are going
+6. **Date Formatting**: Events show friendly date/time formats
+
+### Features in Action:
+
+**Chat:**
+- Messages appear in chat bubbles (yours on the right, others on the left)
+- Shows sender name and avatar for others' messages
+- Timestamps show relative time (e.g., "2:30 PM", "Yesterday", "Jan 15")
+- Smooth scrolling and keyboard handling
+
+**Events:**
+- Events sorted by date (soonest first)
+- Event cards show: image, title, date/time, location, description
+- Attendee count updates instantly when you RSVP
+- Max attendees limit (if set) displayed
+- Beautiful icons and color coding for RSVP statuses
+
+## What's Next - Phase 6: Enhancements
+
+Future improvements could include:
+
+- **Notifications:** Push notifications for new messages and event reminders
+- **Media Sharing:** Send images in chat
+- **Event Reminders:** Calendar integration and push reminders
+- **Search:** Search messages and events
+- **User Profiles:** Enhanced profiles with more details
+- **Moderation:** Report messages, block users, admin tools
 
 ## Project Structure Philosophy
 
