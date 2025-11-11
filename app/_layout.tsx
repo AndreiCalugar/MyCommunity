@@ -47,7 +47,14 @@ export default function RootLayout() {
       <Stack>
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="community/[id]" options={{ headerShown: false }} />
+        <Stack.Screen 
+          name="community/[id]" 
+          options={{ 
+            presentation: 'modal',
+            headerShown: false,
+            animation: 'slide_from_bottom',
+          }} 
+        />
         <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
       </Stack>
       <StatusBar style="auto" />
