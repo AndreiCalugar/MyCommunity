@@ -20,7 +20,7 @@ import { Button } from '@/components/shared/Button';
 
 interface EventAttendee {
   user_id: string;
-  rsvp_status: 'going' | 'interested' | 'not_going';
+  status: 'going' | 'maybe' | 'not_going';
   profile: {
     full_name: string;
     avatar_url?: string;
@@ -84,7 +84,7 @@ export default function EventDetailScreen() {
     try {
       const { data: rsvps, error } = await supabase
         .from('event_rsvps')
-        .select('user_id, rsvp_status')
+        .select('user_id, status')
         .eq('event_id', eventId);
 
       if (error) throw error;
@@ -102,13 +102,13 @@ export default function EventDetailScreen() {
         const attendeeList = rsvps
           .map((rsvp) => ({
             user_id: rsvp.user_id,
-            rsvp_status: rsvp.rsvp_status as 'going' | 'interested' | 'not_going',
+            status: rsvp.status as 'going' | 'maybe' | 'not_going',
             profile: profileMap.get(rsvp.user_id) || {
               full_name: 'Unknown',
               avatar_url: undefined,
             },
           }))
-          .filter((a) => a.rsvp_status !== 'not_going'); // Don't show "not going"
+          .filter((a) => a.status !== 'not_going'); // Don't show "not going"
 
         setAttendees(attendeeList);
       }
@@ -117,40 +117,19 @@ export default function EventDetailScreen() {
     }
   };
 
-  const handleRSVP = async (status: 'going' | 'interested' | 'not_going') => {
+  const handleRSVP = async (status: 'going' | 'maybe' | 'not_going') => {
     if (!params.id || !user) return;
 
     try {
       setRsvpLoading(true);
       await rsvpToEvent(params.id as string, user.id, status);
 
-      // Update local event state
-      if (event) {
-        let newGoing = event.rsvp_count_going || 0;
-        let newInterested = event.rsvp_count_interested || 0;
-
-        // Remove previous RSVP counts
-        if (event.user_rsvp_status === 'going') newGoing--;
-        if (event.user_rsvp_status === 'interested') newInterested--;
-
-        // Add new RSVP counts
-        if (status === 'going') newGoing++;
-        if (status === 'interested') newInterested++;
-
-        setEvent({
-          ...event,
-          user_rsvp_status: status,
-          rsvp_count_going: newGoing,
-          rsvp_count_interested: newInterested,
-        });
-      }
-
-      // Reload attendees
-      await loadAttendees(params.id as string);
+      // Reload event and attendees
+      await loadEventDetails();
 
       if (status === 'going') {
         Alert.alert('Success', "You're going to this event!");
-      } else if (status === 'interested') {
+      } else if (status === 'maybe') {
         Alert.alert('Success', "You're interested in this event!");
       }
     } catch (error: any) {
@@ -182,8 +161,8 @@ export default function EventDetailScreen() {
     ]);
   };
 
-  const getGoingAttendees = () => attendees.filter((a) => a.rsvp_status === 'going');
-  const getInterestedAttendees = () => attendees.filter((a) => a.rsvp_status === 'interested');
+  const getGoingAttendees = () => attendees.filter((a) => a.status === 'going');
+  const getInterestedAttendees = () => attendees.filter((a) => a.status === 'maybe');
 
   if (loading) {
     return (
@@ -367,22 +346,22 @@ export default function EventDetailScreen() {
         <Pressable
           style={[
             styles.rsvpButton,
-            event.user_rsvp_status === 'interested' && { backgroundColor: colors.warning },
+            event.user_rsvp_status === 'maybe' && { backgroundColor: colors.warning },
             !event.user_rsvp_status && { backgroundColor: colors.surface },
           ]}
-          onPress={() => handleRSVP('interested')}
+          onPress={() => handleRSVP('maybe')}
           disabled={rsvpLoading}
         >
           <Ionicons
-            name={event.user_rsvp_status === 'interested' ? 'star' : 'star-outline'}
+            name={event.user_rsvp_status === 'maybe' ? 'star' : 'star-outline'}
             size={24}
-            color={event.user_rsvp_status === 'interested' ? '#FFFFFF' : colors.text}
+            color={event.user_rsvp_status === 'maybe' ? '#FFFFFF' : colors.text}
           />
           <Text
             style={[
               styles.rsvpText,
               {
-                color: event.user_rsvp_status === 'interested' ? '#FFFFFF' : colors.text,
+                color: event.user_rsvp_status === 'maybe' ? '#FFFFFF' : colors.text,
               },
             ]}
           >
@@ -438,8 +417,8 @@ const AttendeesModal: React.FC<AttendeesModalProps> = ({
     warning: '#F0B232',
   };
 
-  const goingAttendees = attendees.filter((a) => a.rsvp_status === 'going');
-  const interestedAttendees = attendees.filter((a) => a.rsvp_status === 'interested');
+  const goingAttendees = attendees.filter((a) => a.status === 'going');
+  const interestedAttendees = attendees.filter((a) => a.status === 'maybe');
 
   return (
     <Modal
