@@ -8,6 +8,9 @@ export default function CommunityDetailLayout() {
   const isDark = colorScheme === 'dark';
   const params = useLocalSearchParams<{ id: string }>();
 
+  console.log('Layout: Received params:', params);
+  console.log('Layout: Community ID:', params.id);
+
   const colors = {
     background: isDark ? '#1E1F22' : '#FFFFFF',
     tint: '#5865F2',

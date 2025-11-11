@@ -8,7 +8,7 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native';
-import { useLocalSearchParams, router } from 'expo-router';
+import { useGlobalSearchParams, router } from 'expo-router';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuthStore } from '@/lib/stores/authStore';
 import { Community } from '@/lib/stores/communityStore';
@@ -21,7 +21,7 @@ import { Ionicons } from '@expo/vector-icons';
 export default function CommunityAboutScreen() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
-  const params = useLocalSearchParams<{ id: string }>();
+  const params = useGlobalSearchParams<{ id: string }>();
   const { user } = useAuthStore();
 
   const [community, setCommunity] = useState<Community | null>(null);
