@@ -168,7 +168,7 @@ Implemented features:
 4. **Leave Community**: If you're a member, tap "Leave Community" button
 5. **Back Navigation**: Use back button to return to communities list
 
-## ✅ Phase 4: Timeline/Posts - COMPLETE!
+## ✅ Phase 4: Timeline/Posts & Rich Profiles - COMPLETE!
 
 Implemented features:
 
@@ -181,6 +181,8 @@ Implemented features:
 - ✅ Pull-to-refresh functionality
 - ✅ Floating action button for quick post creation
 - ✅ Time-ago timestamps and user avatars
+- ✅ Enhanced Members tab with bio, location, and rich profiles
+- ✅ Beautiful member cards with icons and metadata
 
 ## Testing Phase 4
 
@@ -204,7 +206,16 @@ Run the timeline schema:
 
 Without this, image uploads will fail!
 
-### 3. Test Timeline Features
+### 3. Enhance Profiles with Location Data
+
+Run the profile enhancement SQL:
+
+1. Go to your Supabase dashboard → **SQL Editor**
+2. Copy the contents of `supabase/add-member-fields.sql`
+3. Paste and click "Run"
+4. This adds location field and populates profiles with sample data
+
+### 4. Test Timeline Features
 
 1. **View Timeline**: Go to any community, Timeline tab should be first
 2. **Create Post**: Tap the + button (floating action button)
@@ -214,6 +225,17 @@ Without this, image uploads will fail!
 6. **Comment**: Tap comment icon, add comments
 7. **Delete**: Tap trash icon on your own posts/comments
 8. **Real-time**: Open on 2 devices, post from one, see it appear on the other
+
+### 5. Test Enhanced Members Tab
+
+1. **Navigate**: Go to any community → Members tab
+2. **View Rich Profiles**: Each member card now shows:
+   - Large avatar with name
+   - Bio/description (if set)
+   - Location with pin icon
+   - Join date with calendar icon
+   - Role badges (Admin/Moderator)
+3. **Beautiful Layout**: Cards have improved spacing and icons
 
 ## What's Next - Phase 5: Chat or Events
 
