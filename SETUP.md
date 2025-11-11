@@ -168,15 +168,53 @@ Implemented features:
 4. **Leave Community**: If you're a member, tap "Leave Community" button
 5. **Back Navigation**: Use back button to return to communities list
 
-## What's Next - Phase 4: Chat Feature
+## ✅ Phase 4: Timeline/Posts - COMPLETE!
 
-The next phase will implement:
+Implemented features:
+- ✅ Create posts with text and images
+- ✅ Like/unlike posts with instant UI feedback
+- ✅ Comment on posts with full thread view
+- ✅ Delete own posts and comments
+- ✅ Image upload to Supabase Storage
+- ✅ Real-time updates when posts are added
+- ✅ Pull-to-refresh functionality
+- ✅ Floating action button for quick post creation
+- ✅ Time-ago timestamps and user avatars
 
-- Real-time chat for community members
-- Message history
-- User avatars in chat
-- Typing indicators (optional)
-- Message timestamps
+## Testing Phase 4
+
+### 1. Set Up Supabase Database
+Run the timeline schema:
+1. Go to your Supabase dashboard → **SQL Editor**
+2. Copy the contents of `supabase/timeline-schema.sql`
+3. Paste and click "Run"
+
+### 2. Create Storage Bucket for Images
+**IMPORTANT:** You must create a storage bucket manually:
+1. Go to Supabase Dashboard → **Storage**
+2. Click "**New Bucket**"
+3. Name it: `post-images`
+4. Make it **PUBLIC**
+5. Click Create
+
+Without this, image uploads will fail!
+
+### 3. Test Timeline Features
+1. **View Timeline**: Go to any community, Timeline tab should be first
+2. **Create Post**: Tap the + button (floating action button)
+3. **Add Image**: Tap "Add Image" button, select a photo
+4. **Post**: Write some text and tap "Post"
+5. **Like**: Tap the heart icon to like/unlike posts
+6. **Comment**: Tap comment icon, add comments
+7. **Delete**: Tap trash icon on your own posts/comments
+8. **Real-time**: Open on 2 devices, post from one, see it appear on the other
+
+## What's Next - Phase 5: Chat or Events
+
+The next phase could implement:
+- **Option A:** Real-time chat for community members
+- **Option B:** Events & Calendar system
+- **Option C:** Both together!
 
 ## Project Structure Philosophy
 
