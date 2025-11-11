@@ -19,6 +19,7 @@ import {
 } from '@/lib/api/events';
 import { checkMembership } from '@/lib/api/communities';
 import { EventCard } from '@/components/events/EventCard';
+import { EventCalendar } from '@/components/events/EventCalendar';
 import { CreateEventModal } from '@/components/events/CreateEventModal';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -34,6 +35,8 @@ export default function CommunityEventsScreen() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [creating, setCreating] = useState(false);
+  const [viewMode, setViewMode] = useState<'list' | 'calendar'>('list');
+  const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
 
   const colors = {
     background: isDark ? '#1E1F22' : '#FFFFFF',
@@ -185,13 +188,72 @@ export default function CommunityEventsScreen() {
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <FlatList
-        data={events}
-        keyExtractor={(item) => item.id}
-        renderItem={renderEvent}
-        contentContainerStyle={styles.listContent}
-        ListEmptyComponent={renderEmpty}
-      />
+      {/* View Toggle */}
+      <View style={styles.viewToggle}>
+        <Pressable
+          style={[
+            styles.toggleButton,
+            viewMode === 'list' && styles.activeToggle,
+            { backgroundColor: viewMode === 'list' ? colors.fab : 'transparent' },
+          ]}
+          onPress={() => setViewMode('list')}
+        >
+          <Ionicons
+            name="list"
+            size={20}
+            color={viewMode === 'list' ? '#FFFFFF' : colors.secondaryText}
+          />
+          <Text
+            style={[
+              styles.toggleText,
+              { color: viewMode === 'list' ? '#FFFFFF' : colors.secondaryText },
+            ]}
+          >
+            List
+          </Text>
+        </Pressable>
+        <Pressable
+          style={[
+            styles.toggleButton,
+            viewMode === 'calendar' && styles.activeToggle,
+            { backgroundColor: viewMode === 'calendar' ? colors.fab : 'transparent' },
+          ]}
+          onPress={() => setViewMode('calendar')}
+        >
+          <Ionicons
+            name="calendar"
+            size={20}
+            color={viewMode === 'calendar' ? '#FFFFFF' : colors.secondaryText}
+          />
+          <Text
+            style={[
+              styles.toggleText,
+              { color: viewMode === 'calendar' ? '#FFFFFF' : colors.secondaryText },
+            ]}
+          >
+            Calendar
+          </Text>
+        </Pressable>
+      </View>
+
+      {/* Content */}
+      {viewMode === 'list' ? (
+        <FlatList
+          data={events}
+          keyExtractor={(item) => item.id}
+          renderItem={renderEvent}
+          contentContainerStyle={styles.listContent}
+          ListEmptyComponent={renderEmpty}
+        />
+      ) : (
+        <EventCalendar
+          events={events}
+          selectedDate={selectedDate}
+          onDateSelect={setSelectedDate}
+          onRSVP={handleRSVP}
+          colorScheme={colorScheme}
+        />
+      )}
 
       {/* FAB for admins/moderators to create events */}
       {isMember && (
@@ -221,6 +283,28 @@ const styles = StyleSheet.create({
   centered: {
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  viewToggle: {
+    flexDirection: 'row',
+    padding: 12,
+    gap: 8,
+  },
+  toggleButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+  },
+  activeToggle: {
+    // Active state handled by backgroundColor
+  },
+  toggleText: {
+    fontSize: 14,
+    fontWeight: '600',
   },
   listContent: {
     padding: 16,
