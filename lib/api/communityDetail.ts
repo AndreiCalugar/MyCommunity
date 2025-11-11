@@ -10,6 +10,8 @@ export interface CommunityMember {
     full_name: string;
     email: string;
     avatar_url?: string;
+    bio?: string;
+    location?: string;
   };
 }
 
@@ -57,7 +59,7 @@ export const fetchCommunityMembers = async (
   const userIds = [...new Set(members.map((m) => m.user_id))];
   const { data: profiles } = await supabase
     .from('profiles')
-    .select('id, full_name, email, avatar_url')
+    .select('id, full_name, email, avatar_url, bio, location')
     .in('id', userIds);
 
   // Create a profile map for quick lookup
@@ -70,6 +72,8 @@ export const fetchCommunityMembers = async (
       full_name: 'Unknown',
       email: '',
       avatar_url: undefined,
+      bio: undefined,
+      location: undefined,
     },
   }));
 };

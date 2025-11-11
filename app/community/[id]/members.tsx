@@ -11,6 +11,7 @@ import { useLocalSearchParams } from 'expo-router';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { fetchCommunityMembers, CommunityMember } from '@/lib/api/communityDetail';
 import { Avatar } from '@/components/shared/Avatar';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function CommunityMembersScreen() {
   const colorScheme = useColorScheme();
@@ -71,31 +72,48 @@ export default function CommunityMembersScreen() {
       <Avatar
         imageUrl={item.profile.avatar_url}
         name={item.profile.full_name}
-        size="medium"
+        size="large"
       />
       <View style={styles.memberInfo}>
-        <Text style={[styles.memberName, { color: colors.text }]}>
-          {item.profile.full_name || 'Unknown User'}
-        </Text>
-        <Text style={[styles.memberEmail, { color: colors.secondaryText }]}>
-          {item.profile.email}
-        </Text>
-        <Text style={[styles.joinedDate, { color: colors.secondaryText }]}>
-          Joined {new Date(item.joined_at).toLocaleDateString()}
-        </Text>
-      </View>
-      {item.role !== 'member' && (
-        <View
-          style={[
-            styles.roleBadge,
-            { backgroundColor: getRoleBadgeColor(item.role) + '20' },
-          ]}
-        >
-          <Text style={[styles.roleText, { color: getRoleBadgeColor(item.role) }]}>
-            {item.role.charAt(0).toUpperCase() + item.role.slice(1)}
+        <View style={styles.memberHeader}>
+          <Text style={[styles.memberName, { color: colors.text }]}>
+            {item.profile.full_name || 'Unknown User'}
           </Text>
+          {item.role !== 'member' && (
+            <View
+              style={[
+                styles.roleBadge,
+                { backgroundColor: getRoleBadgeColor(item.role) + '20' },
+              ]}
+            >
+              <Text style={[styles.roleText, { color: getRoleBadgeColor(item.role) }]}>
+                {item.role.charAt(0).toUpperCase() + item.role.slice(1)}
+              </Text>
+            </View>
+          )}
         </View>
-      )}
+        {item.profile.bio && (
+          <Text style={[styles.memberBio, { color: colors.secondaryText }]} numberOfLines={2}>
+            {item.profile.bio}
+          </Text>
+        )}
+        <View style={styles.memberMeta}>
+          {item.profile.location && (
+            <View style={styles.metaItem}>
+              <Ionicons name="location-outline" size={14} color={colors.secondaryText} />
+              <Text style={[styles.metaText, { color: colors.secondaryText }]}>
+                {item.profile.location}
+              </Text>
+            </View>
+          )}
+          <View style={styles.metaItem}>
+            <Ionicons name="calendar-outline" size={14} color={colors.secondaryText} />
+            <Text style={[styles.metaText, { color: colors.secondaryText }]}>
+              Joined {new Date(item.joined_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+            </Text>
+          </View>
+        </View>
+      </View>
     </View>
   );
 
@@ -155,8 +173,8 @@ const styles = StyleSheet.create({
   },
   memberCard: {
     flexDirection: 'row',
-    alignItems: 'center',
-    padding: 12,
+    alignItems: 'flex-start',
+    padding: 16,
     borderRadius: 12,
     marginBottom: 12,
   },
@@ -164,25 +182,43 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 12,
   },
+  memberHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 6,
+  },
   memberName: {
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: '600',
-    marginBottom: 2,
+    flex: 1,
   },
-  memberEmail: {
+  memberBio: {
+    fontSize: 14,
+    lineHeight: 20,
+    marginBottom: 8,
+  },
+  memberMeta: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+  },
+  metaItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  metaText: {
     fontSize: 13,
-    marginBottom: 2,
-  },
-  joinedDate: {
-    fontSize: 12,
   },
   roleBadge: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 12,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 10,
+    marginLeft: 8,
   },
   roleText: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '600',
   },
   emptyContainer: {
