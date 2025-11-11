@@ -9,6 +9,7 @@ export interface Community {
   admin_id: string;
   member_count: number;
   created_at: string;
+  categories?: string[];
 }
 
 interface CommunityState {

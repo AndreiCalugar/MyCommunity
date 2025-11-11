@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -20,6 +20,7 @@ import {
   subscribeToCommunities,
 } from '@/lib/api/communities';
 import { CommunityCard } from '@/components/community/CommunityCard';
+import { CategoryFilter } from '@/components/community/CategoryFilter';
 import { Button } from '@/components/shared/Button';
 
 export default function CommunitiesScreen() {
@@ -33,6 +34,7 @@ export default function CommunitiesScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [loadingCommunityId, setLoadingCommunityId] = useState<string | null>(null);
   const [showMyCommunities, setShowMyCommunities] = useState(false);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
   const colors = {
     background: isDark ? '#1E1F22' : '#FFFFFF',
@@ -172,7 +174,33 @@ export default function CommunitiesScreen() {
     router.push(`/community/${communityId}/timeline`);
   };
 
-  const displayedCommunities = showMyCommunities ? myCommunities : communities;
+  const handleToggleCategory = (category: string) => {
+    setSelectedCategories((prev) =>
+      prev.includes(category)
+        ? prev.filter((c) => c !== category)
+        : [...prev, category]
+    );
+  };
+
+  // Filter communities by selected categories
+  const filteredCommunities = useMemo(() => {
+    const baseList = showMyCommunities ? myCommunities : communities;
+    
+    if (selectedCategories.length === 0) {
+      return baseList;
+    }
+    
+    return baseList.filter((community) => {
+      if (!community.categories || community.categories.length === 0) {
+        return false;
+      }
+      return selectedCategories.some((selectedCat) =>
+        community.categories!.includes(selectedCat)
+      );
+    });
+  }, [communities, myCommunities, showMyCommunities, selectedCategories]);
+
+  const displayedCommunities = filteredCommunities;
 
   const renderEmpty = () => (
     <View style={styles.emptyContainer}>
@@ -219,6 +247,15 @@ export default function CommunitiesScreen() {
           style={styles.filterButton}
         />
       </View>
+
+      {/* Category Filter */}
+      {!showMyCommunities && (
+        <CategoryFilter
+          selectedCategories={selectedCategories}
+          onToggleCategory={handleToggleCategory}
+          colorScheme={colorScheme}
+        />
+      )}
 
       {/* Communities List */}
       <FlatList
