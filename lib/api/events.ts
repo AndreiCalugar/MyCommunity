@@ -40,12 +40,16 @@ export const fetchEvents = async (
   communityId: string,
   userId?: string
 ): Promise<Event[]> => {
+  // Fetch events from today onwards (not just future)
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // Start of today
+  
   // Fetch events
   const { data: events, error } = await supabase
     .from('events')
     .select('*')
     .eq('community_id', communityId)
-    .gte('event_date', new Date().toISOString()) // Only future events
+    .gte('event_date', today.toISOString()) // Events from start of today
     .order('event_date', { ascending: true });
 
   if (error) {

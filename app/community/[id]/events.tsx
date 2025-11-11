@@ -8,7 +8,7 @@ import {
   Alert,
   Pressable,
 } from 'react-native';
-import { useGlobalSearchParams } from 'expo-router';
+import { useGlobalSearchParams, useFocusEffect } from 'expo-router';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuthStore } from '@/lib/stores/authStore';
 import {
@@ -48,6 +48,15 @@ export default function CommunityEventsScreen() {
       checkUserRole();
     }
   }, [params.id, user]);
+
+  // Reload events when screen comes into focus
+  useFocusEffect(
+    React.useCallback(() => {
+      if (params.id && user) {
+        loadEvents();
+      }
+    }, [params.id, user])
+  );
 
   const loadEvents = async () => {
     if (!params.id || !user) return;
@@ -97,9 +106,10 @@ export default function CommunityEventsScreen() {
 
     try {
       setCreating(true);
-      const newEvent = await createEvent(params.id as string, user.id, eventData);
-      setEvents([newEvent, ...events]);
+      await createEvent(params.id as string, user.id, eventData);
       setShowCreateModal(false);
+      // Reload events from server to ensure consistency
+      await loadEvents();
       Alert.alert('Success', 'Event created successfully!');
     } catch (error: any) {
       console.error('Error creating event:', error);
