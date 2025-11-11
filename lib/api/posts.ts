@@ -274,7 +274,7 @@ const uploadPostImage = async (imageUri: string, userId: string): Promise<string
   try {
     // Read file as base64
     const base64 = await FileSystem.readAsStringAsync(imageUri, {
-      encoding: FileSystem.EncodingType.Base64,
+      encoding: 'base64',
     });
 
     // Generate unique filename
