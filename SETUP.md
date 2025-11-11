@@ -316,12 +316,14 @@ This creates:
 Major UX enhancements applied:
 
 - ✅ **Modal Presentation:** Community views now slide up as modals
+
   - Swipe down to dismiss
   - Main bottom tabs preserved underneath
   - Slide from bottom animation
   - Better navigation mental model
 
 - ✅ **Community Categories & Filtering:**
+
   - 10 category tags (Tech, Music, Sports, Health, etc.)
   - Horizontal scrollable filter chips with icons
   - Dynamic filtering with instant results
@@ -339,11 +341,13 @@ Major UX enhancements applied:
 ### Testing Polish Features:
 
 1. **Community Navigation**:
+
    - Tap any community - notice smooth slide-up animation
    - Swipe down to dismiss (iOS) or use back button
    - Main tabs stay accessible
 
 2. **Category Filtering**:
+
    - Go to Communities tab
    - Scroll category chips horizontally
    - Tap categories to filter (can select multiple)

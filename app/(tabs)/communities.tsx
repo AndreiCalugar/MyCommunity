@@ -182,9 +182,15 @@ export default function CommunitiesScreen() {
     );
   };
 
-  // Filter communities by selected categories
+  // Filter communities by selected categories (only for "All Communities")
   const filteredCommunities = useMemo(() => {
-    const baseList = showMyCommunities ? myCommunities : communities;
+    // Show all "My Communities" without filtering
+    if (showMyCommunities) {
+      return myCommunities;
+    }
+    
+    // Apply filters to "All Communities"
+    const baseList = communities;
     
     if (selectedCategories.length === 0) {
       return baseList;
