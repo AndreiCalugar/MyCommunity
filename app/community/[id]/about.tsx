@@ -64,7 +64,11 @@ export default function CommunityAboutScreen() {
       }
     } catch (error: any) {
       console.error('Error loading community:', error);
-      Alert.alert('Error', 'Failed to load community details');
+      console.error('Error details:', JSON.stringify(error));
+      Alert.alert(
+        'Error Loading Community',
+        error.message || 'Failed to load community details. Please try again.'
+      );
     } finally {
       setLoading(false);
     }
