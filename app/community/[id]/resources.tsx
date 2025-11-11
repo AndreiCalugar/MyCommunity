@@ -3,6 +3,7 @@ import {
   View,
   StyleSheet,
   FlatList,
+  RefreshControl,
   ActivityIndicator,
   Text,
   Alert,
@@ -31,6 +32,7 @@ export default function CommunityResourcesScreen() {
 
   const [resources, setResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [uploading, setUploading] = useState(false);
 
@@ -73,6 +75,12 @@ export default function CommunityResourcesScreen() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await loadResources();
+    setRefreshing(false);
   };
 
   const handleAddLink = async (data: {
@@ -190,6 +198,13 @@ export default function CommunityResourcesScreen() {
         keyExtractor={(item) => item.id}
         renderItem={renderResource}
         contentContainerStyle={styles.listContent}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            tintColor="#5865F2"
+          />
+        }
         ListEmptyComponent={renderEmpty}
       />
 
