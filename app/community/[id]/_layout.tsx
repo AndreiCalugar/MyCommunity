@@ -30,6 +30,15 @@ export default function CommunityDetailLayout() {
       }}
     >
       <Tabs.Screen
+        name="timeline"
+        options={{
+          title: 'Timeline',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="newspaper-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="about"
         options={{
           title: 'About',
