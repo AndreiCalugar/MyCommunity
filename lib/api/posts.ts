@@ -39,15 +39,10 @@ export const fetchPosts = async (
   limit: number = 20,
   offset: number = 0
 ): Promise<Post[]> => {
-  const { data, error } = await supabase
+  // Fetch posts
+  const { data: posts, error } = await supabase
     .from('posts')
-    .select(`
-      *,
-      profiles!posts_user_id_fkey (
-        full_name,
-        avatar_url
-      )
-    `)
+    .select('*')
     .eq('community_id', communityId)
     .order('created_at', { ascending: false })
     .range(offset, offset + limit - 1);
@@ -57,25 +52,42 @@ export const fetchPosts = async (
     throw error;
   }
 
+  if (!posts || posts.length === 0) {
+    return [];
+  }
+
+  // Fetch profiles for all user_ids
+  const userIds = [...new Set(posts.map((p) => p.user_id))];
+  const { data: profiles } = await supabase
+    .from('profiles')
+    .select('id, full_name, avatar_url')
+    .in('id', userIds);
+
+  // Create a profile map for quick lookup
+  const profileMap = new Map(profiles?.map((p) => [p.id, p]) || []);
+
   // Check if user has liked each post
-  if (userId && data) {
-    const postIds = data.map((p) => p.id);
+  let likedPostIds = new Set<string>();
+  if (userId) {
+    const postIds = posts.map((p) => p.id);
     const { data: likes } = await supabase
       .from('post_likes')
       .select('post_id')
       .eq('user_id', userId)
       .in('post_id', postIds);
 
-    const likedPostIds = new Set(likes?.map((l) => l.post_id) || []);
-
-    return data.map((post) => ({
-      ...post,
-      profile: post.profiles,
-      user_has_liked: likedPostIds.has(post.id),
-    }));
+    likedPostIds = new Set(likes?.map((l) => l.post_id) || []);
   }
 
-  return data?.map((post) => ({ ...post, profile: post.profiles })) || [];
+  // Merge posts with profiles
+  return posts.map((post) => ({
+    ...post,
+    profile: profileMap.get(post.user_id) || {
+      full_name: 'Unknown User',
+      avatar_url: null,
+    },
+    user_has_liked: likedPostIds.has(post.id),
+  }));
 };
 
 /**
@@ -94,7 +106,7 @@ export const createPost = async (
     imageUrl = await uploadPostImage(imageUri, userId);
   }
 
-  const { data, error } = await supabase
+  const { data: post, error } = await supabase
     .from('posts')
     .insert({
       community_id: communityId,
@@ -102,13 +114,7 @@ export const createPost = async (
       content,
       image_url: imageUrl,
     })
-    .select(`
-      *,
-      profiles!posts_user_id_fkey (
-        full_name,
-        avatar_url
-      )
-    `)
+    .select('*')
     .single();
 
   if (error) {
@@ -116,7 +122,17 @@ export const createPost = async (
     throw error;
   }
 
-  return { ...data, profile: data.profiles };
+  // Fetch user profile
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('full_name, avatar_url')
+    .eq('id', userId)
+    .single();
+
+  return {
+    ...post,
+    profile: profile || { full_name: 'Unknown User', avatar_url: null },
+  };
 };
 
 /**
@@ -166,15 +182,10 @@ export const unlikePost = async (postId: string, userId: string): Promise<void> 
  * Fetch comments for a post
  */
 export const fetchComments = async (postId: string): Promise<Comment[]> => {
-  const { data, error } = await supabase
+  // Fetch comments
+  const { data: comments, error } = await supabase
     .from('post_comments')
-    .select(`
-      *,
-      profiles!post_comments_user_id_fkey (
-        full_name,
-        avatar_url
-      )
-    `)
+    .select('*')
     .eq('post_id', postId)
     .order('created_at', { ascending: true });
 
@@ -183,7 +194,28 @@ export const fetchComments = async (postId: string): Promise<Comment[]> => {
     throw error;
   }
 
-  return data?.map((comment) => ({ ...comment, profile: comment.profiles })) || [];
+  if (!comments || comments.length === 0) {
+    return [];
+  }
+
+  // Fetch profiles for all user_ids
+  const userIds = [...new Set(comments.map((c) => c.user_id))];
+  const { data: profiles } = await supabase
+    .from('profiles')
+    .select('id, full_name, avatar_url')
+    .in('id', userIds);
+
+  // Create a profile map for quick lookup
+  const profileMap = new Map(profiles?.map((p) => [p.id, p]) || []);
+
+  // Merge comments with profiles
+  return comments.map((comment) => ({
+    ...comment,
+    profile: profileMap.get(comment.user_id) || {
+      full_name: 'Unknown User',
+      avatar_url: null,
+    },
+  }));
 };
 
 /**
@@ -194,20 +226,14 @@ export const createComment = async (
   userId: string,
   content: string
 ): Promise<Comment> => {
-  const { data, error } = await supabase
+  const { data: comment, error } = await supabase
     .from('post_comments')
     .insert({
       post_id: postId,
       user_id: userId,
       content,
     })
-    .select(`
-      *,
-      profiles!post_comments_user_id_fkey (
-        full_name,
-        avatar_url
-      )
-    `)
+    .select('*')
     .single();
 
   if (error) {
@@ -215,7 +241,17 @@ export const createComment = async (
     throw error;
   }
 
-  return { ...data, profile: data.profiles };
+  // Fetch user profile
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('full_name, avatar_url')
+    .eq('id', userId)
+    .single();
+
+  return {
+    ...comment,
+    profile: profile || { full_name: 'Unknown User', avatar_url: null },
+  };
 };
 
 /**
