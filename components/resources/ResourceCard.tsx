@@ -48,11 +48,20 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
     return <Ionicons name="document" size={24} color={colors.file} />;
   };
 
+  // Ensure URL has a valid protocol
+  const ensureProtocol = (url: string): string => {
+    if (!url.match(/^[a-zA-Z]+:\/\//)) {
+      return 'https://' + url;
+    }
+    return url;
+  };
+
   const handlePress = () => {
     if (resource.type === 'link' && resource.url) {
-      Linking.openURL(resource.url).catch((err) => {
+      const validUrl = ensureProtocol(resource.url);
+      Linking.openURL(validUrl).catch((err) => {
         console.error('Failed to open URL:', err);
-        Alert.alert('Error', 'Could not open link');
+        Alert.alert('Error', 'Could not open link. Please check the URL.');
       });
     } else if (resource.type === 'file' && resource.file_url) {
       Linking.openURL(resource.file_url).catch((err) => {

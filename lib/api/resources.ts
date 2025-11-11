@@ -107,6 +107,27 @@ export const createLinkResource = async (
 };
 
 /**
+ * Sanitize filename for storage (remove special characters, spaces)
+ */
+const sanitizeFileName = (fileName: string): string => {
+  // Get file extension
+  const lastDotIndex = fileName.lastIndexOf('.');
+  const name = lastDotIndex > 0 ? fileName.substring(0, lastDotIndex) : fileName;
+  const extension = lastDotIndex > 0 ? fileName.substring(lastDotIndex) : '';
+
+  // Remove special characters and replace spaces with hyphens
+  const sanitized = name
+    .normalize('NFD') // Normalize unicode characters
+    .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
+    .replace(/[^a-zA-Z0-9-_]/g, '-') // Replace special chars with hyphen
+    .replace(/--+/g, '-') // Replace multiple hyphens with single
+    .replace(/^-|-$/g, '') // Remove leading/trailing hyphens
+    .toLowerCase();
+
+  return sanitized + extension.toLowerCase();
+};
+
+/**
  * Upload file to Supabase Storage
  */
 export const uploadResourceFile = async (
@@ -128,9 +149,10 @@ export const uploadResourceFile = async (
       bytes[i] = binaryString.charCodeAt(i);
     }
 
-    // Generate unique filename
+    // Sanitize and generate unique filename
     const timestamp = Date.now();
-    const uniqueFileName = `${communityId}/${timestamp}-${fileName}`;
+    const sanitizedFileName = sanitizeFileName(fileName);
+    const uniqueFileName = `${communityId}/${timestamp}-${sanitizedFileName}`;
 
     // Upload to Supabase Storage
     const { data, error } = await supabase.storage

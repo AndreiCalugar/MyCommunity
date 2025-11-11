@@ -102,6 +102,14 @@ export const AddResourceModal: React.FC<AddResourceModalProps> = ({
     }
   };
 
+  const ensureProtocol = (inputUrl: string): string => {
+    const trimmed = inputUrl.trim();
+    if (!trimmed.match(/^[a-zA-Z]+:\/\//)) {
+      return 'https://' + trimmed;
+    }
+    return trimmed;
+  };
+
   const handleSubmit = () => {
     if (!title.trim()) {
       Alert.alert('Error', 'Please enter a title');
@@ -113,10 +121,14 @@ export const AddResourceModal: React.FC<AddResourceModalProps> = ({
         Alert.alert('Error', 'Please enter a URL');
         return;
       }
+      
+      // Ensure URL has protocol
+      const validUrl = ensureProtocol(url);
+      
       onAddLink({
         title: title.trim(),
         description: description.trim(),
-        url: url.trim(),
+        url: validUrl,
         category,
       });
     } else {
@@ -248,7 +260,7 @@ export const AddResourceModal: React.FC<AddResourceModalProps> = ({
                   styles.input,
                   { backgroundColor: colors.surface, color: colors.text, borderColor: colors.border },
                 ]}
-                placeholder="https://example.com"
+                placeholder="example.com (https:// will be added automatically)"
                 placeholderTextColor={colors.secondaryText}
                 value={url}
                 onChangeText={setUrl}
