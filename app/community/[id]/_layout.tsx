@@ -58,11 +58,20 @@ export default function CommunityDetailLayout() {
         }}
       />
       <Tabs.Screen
-        name="about"
+        name="chat"
         options={{
-          title: 'About',
+          title: 'Chat',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="information-circle-outline" size={size} color={color} />
+            <Ionicons name="chatbubbles-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="events"
+        options={{
+          title: 'Events',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="calendar-outline" size={size} color={color} />
           ),
         }}
       />
@@ -72,6 +81,15 @@ export default function CommunityDetailLayout() {
           title: 'Members',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="people-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="about"
+        options={{
+          title: 'About',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="information-circle-outline" size={size} color={color} />
           ),
         }}
       />
