@@ -150,6 +150,7 @@ This adds 10 sample communities with images and descriptions.
 ## ✅ Phase 3: Community Detail & About - COMPLETE!
 
 Implemented features:
+
 - ✅ Community detail navigation (tap on any community card)
 - ✅ Tab-based layout (About & Members tabs)
 - ✅ About tab with full description, stats, and admin info
@@ -160,6 +161,7 @@ Implemented features:
 ## Testing Phase 3
 
 ### Test Community Detail Features
+
 1. **Navigate**: Tap on any community card in the Communities list
 2. **View About**: See full description, member count, creation date, admin info
 3. **View Members**: Switch to Members tab to see all members with roles
@@ -169,6 +171,7 @@ Implemented features:
 ## What's Next - Phase 4: Chat Feature
 
 The next phase will implement:
+
 - Real-time chat for community members
 - Message history
 - User avatars in chat
