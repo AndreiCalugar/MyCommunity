@@ -41,7 +41,15 @@ export default function CommunityMembersScreen() {
       setMembers(membersData);
     } catch (error: any) {
       console.error('Error loading members:', error);
-      Alert.alert('Error', 'Failed to load community members');
+      // Check if it's a permission error (not a member)
+      if (error.message?.includes('permission') || error.code === 'PGRST301') {
+        Alert.alert(
+          'Join Required',
+          'You need to join this community to view members. Go back and tap the Join button.'
+        );
+      } else {
+        Alert.alert('Error', 'Failed to load community members');
+      }
     } finally {
       setLoading(false);
     }

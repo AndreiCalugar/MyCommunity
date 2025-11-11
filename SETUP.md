@@ -171,6 +171,7 @@ Implemented features:
 ## ✅ Phase 4: Timeline/Posts - COMPLETE!
 
 Implemented features:
+
 - ✅ Create posts with text and images
 - ✅ Like/unlike posts with instant UI feedback
 - ✅ Comment on posts with full thread view
@@ -184,13 +185,17 @@ Implemented features:
 ## Testing Phase 4
 
 ### 1. Set Up Supabase Database
+
 Run the timeline schema:
+
 1. Go to your Supabase dashboard → **SQL Editor**
 2. Copy the contents of `supabase/timeline-schema.sql`
 3. Paste and click "Run"
 
 ### 2. Create Storage Bucket for Images
+
 **IMPORTANT:** You must create a storage bucket manually:
+
 1. Go to Supabase Dashboard → **Storage**
 2. Click "**New Bucket**"
 3. Name it: `post-images`
@@ -200,6 +205,7 @@ Run the timeline schema:
 Without this, image uploads will fail!
 
 ### 3. Test Timeline Features
+
 1. **View Timeline**: Go to any community, Timeline tab should be first
 2. **Create Post**: Tap the + button (floating action button)
 3. **Add Image**: Tap "Add Image" button, select a photo
@@ -212,6 +218,7 @@ Without this, image uploads will fail!
 ## What's Next - Phase 5: Chat or Events
 
 The next phase could implement:
+
 - **Option A:** Real-time chat for community members
 - **Option B:** Events & Calendar system
 - **Option C:** Both together!

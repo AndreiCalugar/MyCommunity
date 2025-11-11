@@ -71,7 +71,15 @@ export default function TimelineScreen() {
       setPosts(data);
     } catch (error: any) {
       console.error('Error loading posts:', error);
-      Alert.alert('Error', 'Failed to load posts');
+      // Check if it's a permission error (not a member)
+      if (error.message?.includes('permission') || error.code === 'PGRST301') {
+        Alert.alert(
+          'Join Required',
+          'You need to join this community to view posts. Go back and tap the Join button.'
+        );
+      } else {
+        Alert.alert('Error', 'Failed to load posts');
+      }
     } finally {
       setLoading(false);
       setRefreshing(false);

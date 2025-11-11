@@ -169,7 +169,7 @@ export default function CommunitiesScreen() {
   };
 
   const handleCommunityPress = (communityId: string) => {
-    router.push(`/community/${communityId}/about`);
+    router.push(`/community/${communityId}/timeline`);
   };
 
   const displayedCommunities = showMyCommunities ? myCommunities : communities;
