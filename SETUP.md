@@ -263,6 +263,7 @@ Run the chat and events schema:
 3. Paste and click "Run"
 
 This creates:
+
 - `chat_messages` table for real-time messaging
 - `events` table for community events
 - `event_rsvps` table for RSVP tracking
@@ -296,12 +297,14 @@ This creates:
 ### Features in Action:
 
 **Chat:**
+
 - Messages appear in chat bubbles (yours on the right, others on the left)
 - Shows sender name and avatar for others' messages
 - Timestamps show relative time (e.g., "2:30 PM", "Yesterday", "Jan 15")
 - Smooth scrolling and keyboard handling
 
 **Events:**
+
 - Events sorted by date (soonest first)
 - Event cards show: image, title, date/time, location, description
 - Attendee count updates instantly when you RSVP
