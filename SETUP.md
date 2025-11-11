@@ -112,14 +112,45 @@ Then press:
 5. **Log In**: Sign back in with your credentials
 6. **Protected Routes**: Try to access tabs without being logged in
 
-## What's Next - Phase 2: Communities List
+## ✅ Phase 2: Communities List - COMPLETE!
+
+Implemented features:
+- ✅ Communities list screen with beautiful card UI
+- ✅ Join/leave communities with confirmation dialogs
+- ✅ Filter between "All Communities" and "My Communities"
+- ✅ Real-time member count updates via Supabase subscriptions
+- ✅ Optimistic UI updates for instant feedback
+- ✅ Pull-to-refresh functionality
+- ✅ Loading states and error handling
+- ✅ Sample seed data with 10 communities
+
+## Testing Phase 2
+
+### 1. Add Sample Communities
+Run the seed SQL in your Supabase SQL Editor:
+1. Go to your Supabase dashboard → **SQL Editor**
+2. Copy the contents of `supabase/seeds.sql`
+3. Paste and click "Run"
+
+This adds 10 sample communities with images and descriptions.
+
+### 2. Test Communities Features
+1. **View Communities**: See all communities in the Communities tab
+2. **Join Community**: Tap "Join" button on any community card
+3. **See Member Count Update**: Watch the member count increment
+4. **Filter**: Toggle "My Communities" to see only joined communities
+5. **Leave Community**: Tap "Leave" button (with confirmation)
+6. **Pull to Refresh**: Pull down to reload communities
+7. **Real-time Updates**: Open app on 2 devices, join/leave and see updates
+
+## What's Next - Phase 3: Community Detail & About
 
 The next phase will implement:
-
-- Communities list screen
-- Join/leave communities
-- Community detail navigation
-- Real-time member count updates
+- Community detail navigation (tap on card)
+- About tab with full description
+- Member list
+- Admin information
+- Leave community button in detail view
 
 ## Project Structure Philosophy
 
