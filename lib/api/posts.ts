@@ -43,7 +43,7 @@ export const fetchPosts = async (
     .from('posts')
     .select(`
       *,
-      profiles:user_id (
+      profiles!posts_user_id_fkey (
         full_name,
         avatar_url
       )
@@ -104,7 +104,7 @@ export const createPost = async (
     })
     .select(`
       *,
-      profiles:user_id (
+      profiles!posts_user_id_fkey (
         full_name,
         avatar_url
       )
@@ -170,7 +170,7 @@ export const fetchComments = async (postId: string): Promise<Comment[]> => {
     .from('post_comments')
     .select(`
       *,
-      profiles:user_id (
+      profiles!post_comments_user_id_fkey (
         full_name,
         avatar_url
       )
@@ -203,7 +203,7 @@ export const createComment = async (
     })
     .select(`
       *,
-      profiles:user_id (
+      profiles!post_comments_user_id_fkey (
         full_name,
         avatar_url
       )
