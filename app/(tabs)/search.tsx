@@ -150,19 +150,8 @@ export default function SearchScreen() {
                     : colors.surface,
               },
             ]}
-            onPress={() => {
-              console.log(`Filter button pressed: ${type.label}`);
-              console.log(
-                `Current borderRadius: 20, paddingHorizontal: 16, paddingVertical: 8`
-              );
-              setSearchType(type.value);
-            }}
+            onPress={() => setSearchType(type.value)}
             android_ripple={{ color: "rgba(88, 101, 242, 0.3)" }}
-            onLayout={(e) => {
-              console.log(
-                `${type.label} button layout - width: ${e.nativeEvent.layout.width}, height: ${e.nativeEvent.layout.height}`
-              );
-            }}
           >
             <Text
               style={[
@@ -226,31 +215,12 @@ export default function SearchScreen() {
       </View>
 
       {/* Filters */}
-      <View
-        onLayout={(e) => {
-          console.log("=== FILTERS SECTION ===");
-          console.log("Filters container height:", e.nativeEvent.layout.height);
-          console.log("Filters Y position:", e.nativeEvent.layout.y);
-        }}
-      >
-        <SearchTypeFilters />
-      </View>
+      <SearchTypeFilters />
 
       {/* Content */}
       <ScrollView
         style={styles.content}
-        contentContainerStyle={[
-          styles.contentContainer,
-          {
-            backgroundColor: "rgba(255,0,0,0.1)", // Debug: light red tint
-          },
-        ]}
-        onLayout={(e) => {
-          console.log("=== CONTENT SECTION ===");
-          console.log("Content Y position:", e.nativeEvent.layout.y);
-          console.log("Content height:", e.nativeEvent.layout.height);
-          console.log("contentContainer paddingTop should be: 4px");
-        }}
+        contentContainerStyle={styles.contentContainer}
       >
         {loading ? (
           <View style={styles.loadingContainer}>
@@ -258,20 +228,7 @@ export default function SearchScreen() {
           </View>
         ) : showHistory && history.length > 0 ? (
           <View>
-            <View
-              style={styles.historyHeader}
-              onLayout={(e) => {
-                console.log("=== RECENT SEARCHES HEADER ===");
-                console.log(
-                  "Recent Searches Y position:",
-                  e.nativeEvent.layout.y
-                );
-                console.log(
-                  "Recent Searches height:",
-                  e.nativeEvent.layout.height
-                );
-              }}
-            >
+            <View style={styles.historyHeader}>
               <Text style={[styles.sectionTitle, { color: colors.text }]}>
                 Recent Searches
               </Text>
