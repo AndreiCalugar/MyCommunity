@@ -471,13 +471,14 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   section: {
-    marginBottom: 24,
+    marginBottom: 20,
   },
   resultItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 12,
-    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 12,
     marginBottom: 8,
     gap: 12,
   },
