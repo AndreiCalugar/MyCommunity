@@ -69,20 +69,15 @@ export const AnimatedButton: React.FC<AnimatedButtonProps> = ({
     secondary: { 
       bg: isDark ? 'rgba(88, 101, 242, 0.15)' : 'rgba(88, 101, 242, 0.1)', 
       text: DesignSystem.colors.primary, 
-      border: DesignSystem.colors.primary 
+      border: 'transparent' 
     },
     danger: { bg: DesignSystem.colors.danger, text: '#FFFFFF', border: 'transparent' },
     success: { bg: DesignSystem.colors.accent, text: '#FFFFFF', border: 'transparent' },
     gradient: { bg: 'transparent', text: '#FFFFFF', border: 'transparent' },
   };
 
-  const { bg, text, border } = variantColors[variant];
+  const { bg, text } = variantColors[variant];
   const { paddingVertical, paddingHorizontal, fontSize } = sizeStyles[size];
-
-  // Debug logging
-  if (__DEV__) {
-    console.log('AnimatedButton:', { title, variant, size, bg, text, fontSize });
-  }
 
   const buttonStyle = [
     styles.button,
@@ -90,8 +85,6 @@ export const AnimatedButton: React.FC<AnimatedButtonProps> = ({
       paddingVertical,
       paddingHorizontal,
       backgroundColor: variant === 'gradient' ? 'transparent' : bg,
-      borderColor: border,
-      borderWidth: variant === 'secondary' ? 1 : 0,
       opacity: disabled || loading ? 0.5 : 1,
       width: fullWidth ? '100%' : 'auto',
     },
