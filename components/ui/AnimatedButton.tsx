@@ -151,7 +151,7 @@ export const AnimatedButton: React.FC<AnimatedButtonProps> = ({
 
 const styles = StyleSheet.create({
   button: {
-    borderRadius: DesignSystem.borderRadius.medium,
+    borderRadius: DesignSystem.borderRadius.xlarge,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
