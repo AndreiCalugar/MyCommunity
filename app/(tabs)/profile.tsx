@@ -94,6 +94,19 @@ export default function ProfileScreen() {
 
       <View style={styles.section}>
         <Text style={[styles.sectionTitle, { color: colors.secondaryText }]}>
+          Messages
+        </Text>
+        <Button
+          title="View All Messages"
+          onPress={() => router.push('/messages')}
+          variant="secondary"
+          fullWidth
+          style={{ marginBottom: 8 }}
+        />
+      </View>
+
+      <View style={styles.section}>
+        <Text style={[styles.sectionTitle, { color: colors.secondaryText }]}>
           Account
         </Text>
         <View style={[styles.menuItem, { backgroundColor: colors.surface }]}>

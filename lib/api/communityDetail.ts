@@ -23,7 +23,7 @@ export const fetchCommunityById = async (communityId: string): Promise<Community
     .from('communities')
     .select('*')
     .eq('id', communityId)
-    .single();
+    .maybeSingle();
 
   if (error) {
     console.error('Error fetching community:', error);
