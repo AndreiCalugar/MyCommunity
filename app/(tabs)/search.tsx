@@ -150,7 +150,9 @@ export default function SearchScreen() {
                     : colors.surface,
               },
             ]}
-            onPress={() => setSearchType(type.value)}
+            onPress={() => {
+              setSearchType(type.value);
+            }}
             android_ripple={{ color: "rgba(88, 101, 242, 0.3)" }}
           >
             <Text
@@ -215,7 +217,9 @@ export default function SearchScreen() {
       </View>
 
       {/* Filters */}
-      <SearchTypeFilters />
+      <View>
+        <SearchTypeFilters />
+      </View>
 
       {/* Content */}
       <ScrollView
@@ -269,7 +273,7 @@ export default function SearchScreen() {
           <SearchResults
             results={results}
             colors={colors}
-            colorScheme={colorScheme}
+            colorScheme={colorScheme ?? "light"}
           />
         ) : (
           <View style={styles.emptyContainer}>
@@ -511,7 +515,7 @@ const styles = StyleSheet.create({
   },
   filtersContainer: {
     paddingHorizontal: DesignSystem.spacing.lg,
-    paddingTop: 4,
+    paddingTop: DesignSystem.spacing.sm,
     paddingBottom: 4,
     gap: DesignSystem.spacing.sm,
     alignItems: "center",

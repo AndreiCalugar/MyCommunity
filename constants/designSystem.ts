@@ -64,12 +64,12 @@ export const DesignSystem = {
 
     // Gradients
     gradients: {
-      primary: ['#667eea', '#764ba2'],
-      success: ['#56CCF2', '#2F80ED'],
-      warm: ['#F2994A', '#F2C94C'],
-      cool: ['#667eea', '#764ba2'],
-      sunset: ['#FF6B6B', '#FFE66D'],
-      ocean: ['#00D4FF', '#0099CC'],
+      primary: ['#667eea', '#764ba2'] as const,
+      success: ['#56CCF2', '#2F80ED'] as const,
+      warm: ['#F2994A', '#F2C94C'] as const,
+      cool: ['#667eea', '#764ba2'] as const,
+      sunset: ['#FF6B6B', '#FFE66D'] as const,
+      ocean: ['#00D4FF', '#0099CC'] as const,
     },
   },
 
