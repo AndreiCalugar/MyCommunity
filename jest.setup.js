@@ -2,6 +2,27 @@
 process.env.EXPO_PUBLIC_SUPABASE_URL = 'https://test.supabase.co';
 process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY = 'test-anon-key';
 
+// Mock Expo winter runtime to avoid import errors
+jest.mock('expo', () => ({
+  registerRootComponent: jest.fn(),
+  Asset: {
+    fromModule: jest.fn(() => ({
+      downloadAsync: jest.fn(() => Promise.resolve()),
+    })),
+  },
+  Font: {
+    loadAsync: jest.fn(() => Promise.resolve()),
+  },
+  SplashScreen: {
+    preventAutoHideAsync: jest.fn(() => Promise.resolve()),
+    hideAsync: jest.fn(() => Promise.resolve()),
+  },
+  Constants: {
+    expoConfig: {},
+    manifest: {},
+  },
+}));
+
 // Mock Supabase
 jest.mock('@supabase/supabase-js', () => ({
   createClient: jest.fn(() => ({

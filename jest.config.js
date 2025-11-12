@@ -18,5 +18,11 @@ module.exports = {
     '^@/(.*)$': '<rootDir>/$1',
   },
   testEnvironment: 'node',
+  resolver: '<rootDir>/jest.resolver.js',
+  globals: {
+    'ts-jest': {
+      isolatedModules: true,
+    },
+  },
 };
 
