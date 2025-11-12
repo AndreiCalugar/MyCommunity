@@ -136,27 +136,30 @@ WITH CHECK (type = 'direct');
 -- =============================================
 
 -- Users can view participants in their conversations
+-- Fixed: Using subquery to avoid infinite recursion
 CREATE POLICY "Users can view conversation participants"
 ON public.conversation_participants
 FOR SELECT
 USING (
-  EXISTS (
-    SELECT 1 FROM public.conversation_participants cp
-    WHERE cp.conversation_id = conversation_participants.conversation_id
-    AND cp.user_id = auth.uid()
+  conversation_id IN (
+    SELECT cp.conversation_id 
+    FROM public.conversation_participants cp 
+    WHERE cp.user_id = auth.uid()
   )
 );
 
--- Users can add themselves to conversations they create
-CREATE POLICY "Users can add participants to their conversations"
+-- Users can add participants when creating conversations or when already a participant
+-- Fixed: Using subquery to avoid infinite recursion
+CREATE POLICY "Users can add participants to conversations"
 ON public.conversation_participants
 FOR INSERT
 WITH CHECK (
-  user_id = auth.uid() OR
-  EXISTS (
-    SELECT 1 FROM public.conversation_participants cp
-    WHERE cp.conversation_id = conversation_participants.conversation_id
-    AND cp.user_id = auth.uid()
+  user_id = auth.uid() 
+  OR
+  conversation_id IN (
+    SELECT cp.conversation_id 
+    FROM public.conversation_participants cp 
+    WHERE cp.user_id = auth.uid()
   )
 );
 
