@@ -26,7 +26,7 @@ import {
 import { MessageBubble } from '@/components/chat/MessageBubble';
 import { ChatInput } from '@/components/chat/ChatInput';
 import { RealtimeChannel } from '@supabase/supabase-js';
-import Avatar from '@/components/Avatar';
+import { Avatar } from '@/components/shared/Avatar';
 
 export default function DirectMessageChatScreen() {
   const colorScheme = useColorScheme();

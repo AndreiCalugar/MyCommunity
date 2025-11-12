@@ -14,7 +14,7 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuthStore } from '@/lib/stores/authStore';
 import { supabase } from '@/lib/supabase';
 import { getOrCreateDirectConversation } from '@/lib/api/conversations';
-import Avatar from '@/components/Avatar';
+import { Avatar } from '@/components/shared/Avatar';
 
 interface UserProfile {
   id: string;
