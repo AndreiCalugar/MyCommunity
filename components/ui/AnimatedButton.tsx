@@ -66,7 +66,11 @@ export const AnimatedButton: React.FC<AnimatedButtonProps> = ({
 
   const variantColors = {
     primary: { bg: DesignSystem.colors.primary, text: '#FFFFFF', border: 'transparent' },
-    secondary: { bg: isDark ? 'rgba(88, 101, 242, 0.1)' : '#F2F3F5', text: themeColors.text, border: themeColors.border },
+    secondary: { 
+      bg: isDark ? 'rgba(88, 101, 242, 0.15)' : 'rgba(88, 101, 242, 0.1)', 
+      text: DesignSystem.colors.primary, 
+      border: DesignSystem.colors.primary 
+    },
     danger: { bg: DesignSystem.colors.danger, text: '#FFFFFF', border: 'transparent' },
     success: { bg: DesignSystem.colors.accent, text: '#FFFFFF', border: 'transparent' },
     gradient: { bg: 'transparent', text: '#FFFFFF', border: 'transparent' },
@@ -74,6 +78,11 @@ export const AnimatedButton: React.FC<AnimatedButtonProps> = ({
 
   const { bg, text, border } = variantColors[variant];
   const { paddingVertical, paddingHorizontal, fontSize } = sizeStyles[size];
+
+  // Debug logging
+  if (__DEV__) {
+    console.log('AnimatedButton:', { title, variant, size, bg, text, fontSize });
+  }
 
   const buttonStyle = [
     styles.button,
@@ -93,7 +102,17 @@ export const AnimatedButton: React.FC<AnimatedButtonProps> = ({
     <>
       {loading && <ActivityIndicator color={text} style={{ marginRight: 8 }} />}
       {icon && !loading && icon}
-      <Text style={[styles.text, { color: text, fontSize }, textStyle]}>
+      <Text 
+        style={[
+          styles.text, 
+          { 
+            color: text, 
+            fontSize,
+          }, 
+          textStyle
+        ]}
+        numberOfLines={1}
+      >
         {title}
       </Text>
     </>
@@ -144,9 +163,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     ...DesignSystem.shadows.small,
+    minHeight: 40, // Ensure minimum height
   },
   text: {
     fontWeight: DesignSystem.typography.fontWeight.semibold,
+    textAlign: 'center',
   },
 });
 
