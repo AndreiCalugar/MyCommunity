@@ -29,13 +29,14 @@ export const fetchMessages = async (
     .select('id')
     .eq('type', 'community')
     .eq('community_id', communityId)
-    .single();
+    .maybeSingle(); // Use maybeSingle() instead of single() to handle 0 rows gracefully
 
   if (convError) {
     console.error('Error fetching conversation:', convError);
     throw convError;
   }
 
+  // If no conversation exists yet, return empty array (no messages yet)
   if (!conversation) {
     return [];
   }
@@ -88,17 +89,33 @@ export const sendMessage = async (
   userId: string,
   message: string
 ): Promise<ChatMessage | null> => {
-  // First, get the conversation_id for this community
-  const { data: conversation, error: convError } = await supabase
+  // First, get or create the conversation_id for this community
+  let { data: conversation, error: convError } = await supabase
     .from('conversations')
     .select('id')
     .eq('type', 'community')
     .eq('community_id', communityId)
-    .single();
+    .maybeSingle(); // Use maybeSingle() to handle 0 rows gracefully
 
-  if (convError || !conversation) {
+  if (convError) {
     console.error('Error fetching conversation:', convError);
-    throw convError || new Error('Conversation not found');
+    throw convError;
+  }
+
+  // If no conversation exists, create one
+  if (!conversation) {
+    const { data: newConversation, error: createError } = await supabase
+      .from('conversations')
+      .insert({ type: 'community', community_id: communityId })
+      .select('id')
+      .single();
+
+    if (createError || !newConversation) {
+      console.error('Error creating conversation:', createError);
+      throw createError || new Error('Failed to create conversation');
+    }
+
+    conversation = newConversation;
   }
 
   const { data, error } = await supabase

@@ -75,9 +75,6 @@ jest.mock('expo-linking', () => ({
   openURL: jest.fn(),
 }));
 
-// Mock React Native modules
-jest.mock('react-native/Libraries/Animated/NativeAnimatedHelper');
-
 // Suppress console warnings in tests
 global.console = {
   ...console,
