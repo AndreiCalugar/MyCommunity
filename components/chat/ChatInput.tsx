@@ -4,8 +4,6 @@ import {
   TextInput,
   StyleSheet,
   Pressable,
-  KeyboardAvoidingView,
-  Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -40,44 +38,39 @@ export const ChatInput: React.FC<ChatInputProps> = ({
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={100}
-    >
-      <View style={[styles.container, { backgroundColor: colors.background }]}>
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={[
-              styles.input,
-              {
-                color: colors.text,
-                backgroundColor: isDark ? '#1E1F22' : '#FFFFFF',
-              },
-            ]}
-            placeholder="Type a message..."
-            placeholderTextColor={colors.placeholder}
-            value={message}
-            onChangeText={setMessage}
-            multiline
-            maxLength={1000}
-            editable={!disabled}
-          />
-          <Pressable
-            style={[
-              styles.sendButton,
-              {
-                backgroundColor:
-                  message.trim() && !disabled ? colors.sendButton : colors.sendButtonDisabled,
-              },
-            ]}
-            onPress={handleSend}
-            disabled={!message.trim() || disabled}
-          >
-            <Ionicons name="send" size={20} color="#FFFFFF" />
-          </Pressable>
-        </View>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={[
+            styles.input,
+            {
+              color: colors.text,
+              backgroundColor: isDark ? '#1E1F22' : '#FFFFFF',
+            },
+          ]}
+          placeholder="Type a message..."
+          placeholderTextColor={colors.placeholder}
+          value={message}
+          onChangeText={setMessage}
+          multiline
+          maxLength={1000}
+          editable={!disabled}
+        />
+        <Pressable
+          style={[
+            styles.sendButton,
+            {
+              backgroundColor:
+                message.trim() && !disabled ? colors.sendButton : colors.sendButtonDisabled,
+            },
+          ]}
+          onPress={handleSend}
+          disabled={!message.trim() || disabled}
+        >
+          <Ionicons name="send" size={20} color="#FFFFFF" />
+        </Pressable>
       </View>
-    </KeyboardAvoidingView>
+    </View>
   );
 };
 
