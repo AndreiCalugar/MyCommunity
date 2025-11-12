@@ -206,17 +206,46 @@ export default function SearchScreen() {
       </View>
 
       {/* Filters */}
-      <SearchTypeFilters />
+      <View
+        onLayout={(e) => {
+          console.log('=== FILTERS SECTION ===');
+          console.log('Filters container height:', e.nativeEvent.layout.height);
+          console.log('Filters Y position:', e.nativeEvent.layout.y);
+        }}
+      >
+        <SearchTypeFilters />
+      </View>
 
       {/* Content */}
-      <ScrollView style={styles.content} contentContainerStyle={styles.contentContainer}>
+      <ScrollView 
+        style={styles.content} 
+        contentContainerStyle={[
+          styles.contentContainer,
+          { 
+            backgroundColor: 'rgba(255,0,0,0.1)' // Debug: light red tint
+          }
+        ]}
+        onLayout={(e) => {
+          console.log('=== CONTENT SECTION ===');
+          console.log('Content Y position:', e.nativeEvent.layout.y);
+          console.log('Content height:', e.nativeEvent.layout.height);
+          console.log('contentContainer paddingTop should be: 4px');
+        }}
+      >
         {loading ? (
           <View style={styles.loadingContainer}>
             <ActivityIndicator size="large" color={colors.active} />
           </View>
         ) : showHistory && history.length > 0 ? (
           <View>
-            <View style={styles.historyHeader}>
+            <View 
+              style={styles.historyHeader}
+              onLayout={(e) => {
+                console.log('=== RECENT SEARCHES HEADER ===');
+                console.log('Recent Searches Y position:', e.nativeEvent.layout.y);
+                console.log('Recent Searches height:', e.nativeEvent.layout.height);
+              }}
+            >
               <Text style={[styles.sectionTitle, { color: colors.text }]}>Recent Searches</Text>
               <Pressable onPress={handleClearHistory}>
                 <Text style={[styles.clearText, { color: colors.active }]}>Clear All</Text>
