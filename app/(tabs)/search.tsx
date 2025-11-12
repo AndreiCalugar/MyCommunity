@@ -1,51 +1,51 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { Avatar } from "@/components/shared/Avatar";
+import { DesignSystem } from "@/constants/designSystem";
+import { useColorScheme } from "@/hooks/use-color-scheme";
 import {
-  View,
-  StyleSheet,
-  TextInput,
-  ScrollView,
-  Text,
-  Pressable,
+  clearSearchHistory,
+  deleteSearchHistory,
+  getResultCount,
+  getSearchHistory,
+  performSearch,
+  SearchHistoryItem,
+  SearchResult,
+  SearchType,
+} from "@/lib/api/search";
+import { useAuthStore } from "@/lib/stores/authStore";
+import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
+import { router } from "expo-router";
+import React, { useEffect, useState } from "react";
+import {
   ActivityIndicator,
   Alert,
-} from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { router } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
-import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useAuthStore } from '@/lib/stores/authStore';
-import {
-  performSearch,
-  getSearchHistory,
-  deleteSearchHistory,
-  clearSearchHistory,
-  SearchType,
-  SearchResult,
-  SearchHistoryItem,
-  getResultCount,
-} from '@/lib/api/search';
-import { Avatar } from '@/components/shared/Avatar';
-import { DesignSystem } from '@/constants/designSystem';
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 
 export default function SearchScreen() {
   const colorScheme = useColorScheme();
-  const isDark = colorScheme === 'dark';
+  const isDark = colorScheme === "dark";
   const { user } = useAuthStore();
 
-  const [query, setQuery] = useState('');
-  const [searchType, setSearchType] = useState<SearchType>('all');
+  const [query, setQuery] = useState("");
+  const [searchType, setSearchType] = useState<SearchType>("all");
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<SearchResult | null>(null);
   const [history, setHistory] = useState<SearchHistoryItem[]>([]);
   const [showHistory, setShowHistory] = useState(true);
 
   const colors = {
-    background: isDark ? '#1E1F22' : '#FFFFFF',
-    surface: isDark ? '#2B2D31' : '#F2F3F5',
-    text: isDark ? '#FFFFFF' : '#060607',
-    secondaryText: isDark ? '#B5BAC1' : '#4E5058',
-    border: isDark ? '#4E5058' : '#E0E0E0',
-    active: '#5865F2',
+    background: isDark ? "#1E1F22" : "#FFFFFF",
+    surface: isDark ? "#2B2D31" : "#F2F3F5",
+    text: isDark ? "#FFFFFF" : "#060607",
+    secondaryText: isDark ? "#B5BAC1" : "#4E5058",
+    border: isDark ? "#4E5058" : "#E0E0E0",
+    active: "#5865F2",
   };
 
   useEffect(() => {
@@ -58,7 +58,7 @@ export default function SearchScreen() {
       const data = await getSearchHistory(user.id);
       setHistory(data);
     } catch (error) {
-      console.error('Error loading search history:', error);
+      console.error("Error loading search history:", error);
     }
   };
 
@@ -72,8 +72,8 @@ export default function SearchScreen() {
       setResults(data);
       await loadHistory(); // Refresh history
     } catch (error: any) {
-      console.error('Error searching:', error);
-      Alert.alert('Error', 'Failed to perform search');
+      console.error("Error searching:", error);
+      Alert.alert("Error", "Failed to perform search");
     } finally {
       setLoading(false);
     }
@@ -93,36 +93,40 @@ export default function SearchScreen() {
       await deleteSearchHistory(id);
       setHistory(history.filter((h) => h.id !== id));
     } catch (error) {
-      console.error('Error deleting history:', error);
+      console.error("Error deleting history:", error);
     }
   };
 
   const handleClearHistory = async () => {
     if (!user) return;
-    Alert.alert('Clear History', 'Are you sure you want to clear all search history?', [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'Clear',
-        style: 'destructive',
-        onPress: async () => {
-          try {
-            await clearSearchHistory(user.id);
-            setHistory([]);
-          } catch (error) {
-            console.error('Error clearing history:', error);
-          }
+    Alert.alert(
+      "Clear History",
+      "Are you sure you want to clear all search history?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Clear",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await clearSearchHistory(user.id);
+              setHistory([]);
+            } catch (error) {
+              console.error("Error clearing history:", error);
+            }
+          },
         },
-      },
-    ]);
+      ]
+    );
   };
 
   const SearchTypeFilters = () => {
     const types: { value: SearchType; label: string }[] = [
-      { value: 'all', label: 'All' },
-      { value: 'communities', label: 'Communities' },
-      { value: 'posts', label: 'Posts' },
-      { value: 'events', label: 'Events' },
-      { value: 'resources', label: 'Resources' },
+      { value: "all", label: "All" },
+      { value: "communities", label: "Communities" },
+      { value: "posts", label: "Posts" },
+      { value: "events", label: "Events" },
+      { value: "resources", label: "Resources" },
     ];
 
     return (
@@ -138,25 +142,37 @@ export default function SearchScreen() {
               styles.filterChip,
               searchType === type.value && styles.filterChipActive,
               {
-                backgroundColor: searchType === type.value 
-                  ? DesignSystem.colors.primary 
-                  : isDark ? 'rgba(88, 101, 242, 0.1)' : colors.surface,
+                backgroundColor:
+                  searchType === type.value
+                    ? DesignSystem.colors.primary
+                    : isDark
+                    ? "rgba(88, 101, 242, 0.1)"
+                    : colors.surface,
               },
             ]}
             onPress={() => {
               console.log(`Filter button pressed: ${type.label}`);
-              console.log(`Current borderRadius: 20, paddingHorizontal: 16, paddingVertical: 8`);
+              console.log(
+                `Current borderRadius: 20, paddingHorizontal: 16, paddingVertical: 8`
+              );
               setSearchType(type.value);
             }}
-            android_ripple={{ color: 'rgba(88, 101, 242, 0.3)' }}
+            android_ripple={{ color: "rgba(88, 101, 242, 0.3)" }}
             onLayout={(e) => {
-              console.log(`${type.label} button layout - width: ${e.nativeEvent.layout.width}, height: ${e.nativeEvent.layout.height}`);
+              console.log(
+                `${type.label} button layout - width: ${e.nativeEvent.layout.width}, height: ${e.nativeEvent.layout.height}`
+              );
             }}
           >
             <Text
               style={[
                 styles.filterText,
-                { color: searchType === type.value ? '#FFFFFF' : DesignSystem.colors.primary },
+                {
+                  color:
+                    searchType === type.value
+                      ? "#FFFFFF"
+                      : DesignSystem.colors.primary,
+                },
               ]}
             >
               {type.label}
@@ -195,12 +211,16 @@ export default function SearchScreen() {
         {query.length > 0 && (
           <Pressable
             onPress={() => {
-              setQuery('');
+              setQuery("");
               setResults(null);
               setShowHistory(true);
             }}
           >
-            <Ionicons name="close-circle" size={20} color={colors.secondaryText} />
+            <Ionicons
+              name="close-circle"
+              size={20}
+              color={colors.secondaryText}
+            />
           </Pressable>
         )}
       </View>
@@ -208,28 +228,28 @@ export default function SearchScreen() {
       {/* Filters */}
       <View
         onLayout={(e) => {
-          console.log('=== FILTERS SECTION ===');
-          console.log('Filters container height:', e.nativeEvent.layout.height);
-          console.log('Filters Y position:', e.nativeEvent.layout.y);
+          console.log("=== FILTERS SECTION ===");
+          console.log("Filters container height:", e.nativeEvent.layout.height);
+          console.log("Filters Y position:", e.nativeEvent.layout.y);
         }}
       >
         <SearchTypeFilters />
       </View>
 
       {/* Content */}
-      <ScrollView 
-        style={styles.content} 
+      <ScrollView
+        style={styles.content}
         contentContainerStyle={[
           styles.contentContainer,
-          { 
-            backgroundColor: 'rgba(255,0,0,0.1)' // Debug: light red tint
-          }
+          {
+            backgroundColor: "rgba(255,0,0,0.1)", // Debug: light red tint
+          },
         ]}
         onLayout={(e) => {
-          console.log('=== CONTENT SECTION ===');
-          console.log('Content Y position:', e.nativeEvent.layout.y);
-          console.log('Content height:', e.nativeEvent.layout.height);
-          console.log('contentContainer paddingTop should be: 4px');
+          console.log("=== CONTENT SECTION ===");
+          console.log("Content Y position:", e.nativeEvent.layout.y);
+          console.log("Content height:", e.nativeEvent.layout.height);
+          console.log("contentContainer paddingTop should be: 4px");
         }}
       >
         {loading ? (
@@ -238,38 +258,69 @@ export default function SearchScreen() {
           </View>
         ) : showHistory && history.length > 0 ? (
           <View>
-            <View 
+            <View
               style={styles.historyHeader}
               onLayout={(e) => {
-                console.log('=== RECENT SEARCHES HEADER ===');
-                console.log('Recent Searches Y position:', e.nativeEvent.layout.y);
-                console.log('Recent Searches height:', e.nativeEvent.layout.height);
+                console.log("=== RECENT SEARCHES HEADER ===");
+                console.log(
+                  "Recent Searches Y position:",
+                  e.nativeEvent.layout.y
+                );
+                console.log(
+                  "Recent Searches height:",
+                  e.nativeEvent.layout.height
+                );
               }}
             >
-              <Text style={[styles.sectionTitle, { color: colors.text }]}>Recent Searches</Text>
+              <Text style={[styles.sectionTitle, { color: colors.text }]}>
+                Recent Searches
+              </Text>
               <Pressable onPress={handleClearHistory}>
-                <Text style={[styles.clearText, { color: colors.active }]}>Clear All</Text>
+                <Text style={[styles.clearText, { color: colors.active }]}>
+                  Clear All
+                </Text>
               </Pressable>
             </View>
             {history.map((item) => (
               <Pressable
                 key={item.id}
-                style={[styles.historyItem, { backgroundColor: colors.surface }]}
+                style={[
+                  styles.historyItem,
+                  { backgroundColor: colors.surface },
+                ]}
                 onPress={() => handleHistoryClick(item.query)}
               >
-                <Ionicons name="time-outline" size={20} color={colors.secondaryText} />
-                <Text style={[styles.historyText, { color: colors.text }]}>{item.query}</Text>
+                <Ionicons
+                  name="time-outline"
+                  size={20}
+                  color={colors.secondaryText}
+                />
+                <Text style={[styles.historyText, { color: colors.text }]}>
+                  {item.query}
+                </Text>
                 <Pressable onPress={() => handleDeleteHistory(item.id)}>
-                  <Ionicons name="close" size={20} color={colors.secondaryText} />
+                  <Ionicons
+                    name="close"
+                    size={20}
+                    color={colors.secondaryText}
+                  />
                 </Pressable>
               </Pressable>
             ))}
           </View>
         ) : results ? (
-          <SearchResults results={results} colors={colors} colorScheme={colorScheme} />
+          <SearchResults
+            results={results}
+            colors={colors}
+            colorScheme={colorScheme}
+          />
         ) : (
           <View style={styles.emptyContainer}>
-            <Ionicons name="search-outline" size={64} color={colors.secondaryText} />
+            <Ionicons
+              name="search-outline"
+              size={64}
+              color={colors.secondaryText}
+            />
             <Text style={[styles.emptyText, { color: colors.secondaryText }]}>
               Search for communities, posts, events, and resources
             </Text>
@@ -283,17 +334,27 @@ export default function SearchScreen() {
 interface SearchResultsProps {
   results: SearchResult;
   colors: any;
-  colorScheme: 'light' | 'dark';
+  colorScheme: "light" | "dark";
 }
 
-const SearchResults: React.FC<SearchResultsProps> = ({ results, colors, colorScheme }) => {
+const SearchResults: React.FC<SearchResultsProps> = ({
+  results,
+  colors,
+  colorScheme,
+}) => {
   const totalResults = getResultCount(results);
 
   if (totalResults === 0) {
     return (
       <View style={styles.emptyContainer}>
-        <Ionicons name="search-outline" size={64} color={colors.secondaryText} />
-        <Text style={[styles.emptyText, { color: colors.secondaryText }]}>No results found</Text>
+        <Ionicons
+          name="search-outline"
+          size={64}
+          color={colors.secondaryText}
+        />
+        <Text style={[styles.emptyText, { color: colors.secondaryText }]}>
+          No results found
+        </Text>
       </View>
     );
   }
@@ -301,7 +362,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({ results, colors, colorSch
   return (
     <View>
       <Text style={[styles.resultCount, { color: colors.secondaryText }]}>
-        {totalResults} result{totalResults !== 1 ? 's' : ''}
+        {totalResults} result{totalResults !== 1 ? "s" : ""}
       </Text>
 
       {/* Communities */}
@@ -316,14 +377,29 @@ const SearchResults: React.FC<SearchResultsProps> = ({ results, colors, colorSch
               style={[styles.resultItem, { backgroundColor: colors.surface }]}
               onPress={() => router.push(`/community/${community.id}/timeline`)}
             >
-              <Avatar imageUrl={community.image_url} name={community.name} size="medium" />
+              <Avatar
+                imageUrl={community.image_url}
+                name={community.name}
+                size="medium"
+              />
               <View style={styles.resultContent}>
-                <Text style={[styles.resultTitle, { color: colors.text }]}>{community.name}</Text>
-                <Text style={[styles.resultSubtitle, { color: colors.secondaryText }]}>
+                <Text style={[styles.resultTitle, { color: colors.text }]}>
+                  {community.name}
+                </Text>
+                <Text
+                  style={[
+                    styles.resultSubtitle,
+                    { color: colors.secondaryText },
+                  ]}
+                >
                   {community.member_count} members
                 </Text>
               </View>
-              <Ionicons name="chevron-forward" size={20} color={colors.secondaryText} />
+              <Ionicons
+                name="chevron-forward"
+                size={20}
+                color={colors.secondaryText}
+              />
             </Pressable>
           ))}
         </View>
@@ -339,14 +415,28 @@ const SearchResults: React.FC<SearchResultsProps> = ({ results, colors, colorSch
             <Pressable
               key={post.id}
               style={[styles.resultItem, { backgroundColor: colors.surface }]}
-              onPress={() => router.push(`/community/${post.community_id}/timeline`)}
+              onPress={() =>
+                router.push(`/community/${post.community_id}/timeline`)
+              }
             >
-              <Ionicons name="newspaper-outline" size={24} color={colors.active} />
+              <Ionicons
+                name="newspaper-outline"
+                size={24}
+                color={colors.active}
+              />
               <View style={styles.resultContent}>
-                <Text style={[styles.resultTitle, { color: colors.text }]} numberOfLines={2}>
+                <Text
+                  style={[styles.resultTitle, { color: colors.text }]}
+                  numberOfLines={2}
+                >
                   {post.content}
                 </Text>
-                <Text style={[styles.resultSubtitle, { color: colors.secondaryText }]}>
+                <Text
+                  style={[
+                    styles.resultSubtitle,
+                    { color: colors.secondaryText },
+                  ]}
+                >
                   {post.profile?.full_name} • {post.community?.name}
                 </Text>
               </View>
@@ -365,13 +455,27 @@ const SearchResults: React.FC<SearchResultsProps> = ({ results, colors, colorSch
             <Pressable
               key={event.id}
               style={[styles.resultItem, { backgroundColor: colors.surface }]}
-              onPress={() => router.push(`/community/${event.community_id}/events`)}
+              onPress={() =>
+                router.push(`/community/${event.community_id}/events`)
+              }
             >
-              <Ionicons name="calendar-outline" size={24} color={colors.active} />
+              <Ionicons
+                name="calendar-outline"
+                size={24}
+                color={colors.active}
+              />
               <View style={styles.resultContent}>
-                <Text style={[styles.resultTitle, { color: colors.text }]}>{event.title}</Text>
-                <Text style={[styles.resultSubtitle, { color: colors.secondaryText }]}>
-                  {new Date(event.event_date).toLocaleDateString()} • {event.community?.name}
+                <Text style={[styles.resultTitle, { color: colors.text }]}>
+                  {event.title}
+                </Text>
+                <Text
+                  style={[
+                    styles.resultSubtitle,
+                    { color: colors.secondaryText },
+                  ]}
+                >
+                  {new Date(event.event_date).toLocaleDateString()} •{" "}
+                  {event.community?.name}
                 </Text>
               </View>
             </Pressable>
@@ -389,16 +493,25 @@ const SearchResults: React.FC<SearchResultsProps> = ({ results, colors, colorSch
             <Pressable
               key={resource.id}
               style={[styles.resultItem, { backgroundColor: colors.surface }]}
-              onPress={() => router.push(`/community/${resource.community_id}/resources`)}
+              onPress={() =>
+                router.push(`/community/${resource.community_id}/resources`)
+              }
             >
               <Ionicons
-                name={resource.type === 'link' ? 'link' : 'document'}
+                name={resource.type === "link" ? "link" : "document"}
                 size={24}
                 color={colors.active}
               />
               <View style={styles.resultContent}>
-                <Text style={[styles.resultTitle, { color: colors.text }]}>{resource.title}</Text>
-                <Text style={[styles.resultSubtitle, { color: colors.secondaryText }]}>
+                <Text style={[styles.resultTitle, { color: colors.text }]}>
+                  {resource.title}
+                </Text>
+                <Text
+                  style={[
+                    styles.resultSubtitle,
+                    { color: colors.secondaryText },
+                  ]}
+                >
                   {resource.type} • {resource.community?.name}
                 </Text>
               </View>
@@ -422,12 +535,12 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: DesignSystem.typography.fontSize.xxxl,
     fontWeight: DesignSystem.typography.fontWeight.extrabold,
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     letterSpacing: DesignSystem.typography.letterSpacing.tight,
   },
   searchBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     margin: 16,
     paddingHorizontal: 12,
     paddingVertical: 10,
@@ -441,23 +554,23 @@ const styles = StyleSheet.create({
   },
   filtersContainer: {
     paddingHorizontal: DesignSystem.spacing.lg,
-    paddingTop: DesignSystem.spacing.sm,
+    paddingTop: 4,
     paddingBottom: 4,
     gap: DesignSystem.spacing.sm,
-    alignItems: 'center',
+    alignItems: "center",
   },
   filterChip: {
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
-    alignSelf: 'flex-start',
+    alignSelf: "flex-start",
   },
   filterChipActive: {
     ...DesignSystem.shadows.small,
   },
   filterText: {
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   content: {
     flex: 1,
@@ -469,35 +582,35 @@ const styles = StyleSheet.create({
   },
   loadingContainer: {
     paddingVertical: 64,
-    alignItems: 'center',
+    alignItems: "center",
   },
   emptyContainer: {
     paddingVertical: 64,
-    alignItems: 'center',
+    alignItems: "center",
   },
   emptyText: {
     fontSize: 16,
     marginTop: 16,
-    textAlign: 'center',
+    textAlign: "center",
   },
   historyHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 12,
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 12,
   },
   clearText: {
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   historyItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     padding: 12,
     borderRadius: 8,
     marginBottom: 8,
@@ -515,8 +628,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   resultItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingVertical: 10,
     paddingHorizontal: 12,
     borderRadius: 12,
@@ -528,11 +641,10 @@ const styles = StyleSheet.create({
   },
   resultTitle: {
     fontSize: 15,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 2,
   },
   resultSubtitle: {
     fontSize: 13,
   },
 });
-
