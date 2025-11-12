@@ -123,12 +123,12 @@ export const CommunityCard: React.FC<CommunityCardProps> = ({
 
 const styles = StyleSheet.create({
   card: {
-    marginBottom: DesignSystem.spacing.lg,
+    marginBottom: DesignSystem.spacing.md,
     overflow: 'hidden',
   },
   imageContainer: {
     width: '100%',
-    height: 180,
+    height: 140,
     position: 'relative',
   },
   image: {
@@ -150,8 +150,8 @@ const styles = StyleSheet.create({
   },
   memberBadge: {
     position: 'absolute',
-    top: DesignSystem.spacing.md,
-    right: DesignSystem.spacing.md,
+    top: DesignSystem.spacing.sm,
+    right: DesignSystem.spacing.sm,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: DesignSystem.spacing.sm,
@@ -165,18 +165,18 @@ const styles = StyleSheet.create({
     fontWeight: DesignSystem.typography.fontWeight.semibold,
   },
   content: {
-    padding: DesignSystem.spacing.lg,
+    padding: DesignSystem.spacing.md,
   },
   name: {
-    fontSize: DesignSystem.typography.fontSize.xl,
+    fontSize: DesignSystem.typography.fontSize.lg,
     fontWeight: DesignSystem.typography.fontWeight.bold,
-    marginBottom: DesignSystem.spacing.sm,
+    marginBottom: DesignSystem.spacing.xs,
     letterSpacing: DesignSystem.typography.letterSpacing.tight,
   },
   description: {
-    fontSize: DesignSystem.typography.fontSize.md,
-    lineHeight: 22,
-    marginBottom: DesignSystem.spacing.lg,
+    fontSize: DesignSystem.typography.fontSize.sm,
+    lineHeight: 20,
+    marginBottom: DesignSystem.spacing.md,
   },
 });
 

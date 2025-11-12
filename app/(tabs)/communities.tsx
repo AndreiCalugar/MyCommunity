@@ -324,18 +324,20 @@ const styles = StyleSheet.create({
   filterContainer: {
     flexDirection: 'row',
     paddingHorizontal: DesignSystem.spacing.lg,
-    paddingTop: DesignSystem.spacing.lg,
-    paddingBottom: DesignSystem.spacing.md,
+    paddingTop: DesignSystem.spacing.md,
+    paddingBottom: DesignSystem.spacing.sm,
     gap: DesignSystem.spacing.md,
   },
   filterButton: {
     flex: 1,
   },
   categoryFilterContainer: {
-    paddingTop: DesignSystem.spacing.md,
+    paddingTop: DesignSystem.spacing.xs,
   },
   listContent: {
-    padding: DesignSystem.spacing.lg,
+    paddingHorizontal: DesignSystem.spacing.lg,
+    paddingTop: DesignSystem.spacing.sm,
+    paddingBottom: DesignSystem.spacing.lg,
   },
 });
 
