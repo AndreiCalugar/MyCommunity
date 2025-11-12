@@ -46,8 +46,7 @@ export default function CommunitiesScreen() {
     loadCommunities();
 
     // Subscribe to real-time updates
-    const subscription = subscribeToCommunities((payload) => {
-      console.log('Community updated:', payload);
+    const subscription = subscribeToCommunities(() => {
       loadCommunities();
     });
 
@@ -257,7 +256,7 @@ export default function CommunitiesScreen() {
       </View>
 
       {/* Category Filter */}
-      {!showMyCommunities && (
+      {!showMyCommunities ? (
         <View style={styles.categoryFilterContainer}>
           <CategoryFilter
             selectedCategories={selectedCategories}
@@ -265,6 +264,8 @@ export default function CommunitiesScreen() {
             colorScheme={colorScheme}
           />
         </View>
+      ) : (
+        <View style={styles.myCommunitiesSpacing} />
       )}
 
       {/* Communities List */}
@@ -333,6 +334,9 @@ const styles = StyleSheet.create({
   },
   categoryFilterContainer: {
     paddingTop: DesignSystem.spacing.sm,
+  },
+  myCommunitiesSpacing: {
+    height: DesignSystem.spacing.md,
   },
   listContent: {
     paddingHorizontal: DesignSystem.spacing.lg,
