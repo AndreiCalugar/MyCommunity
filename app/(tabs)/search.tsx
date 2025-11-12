@@ -145,7 +145,7 @@ export default function SearchScreen() {
             ]}
             onPress={() => {
               console.log(`Filter button pressed: ${type.label}`);
-              console.log(`Current borderRadius: 20, paddingHorizontal: 12, paddingVertical: 6`);
+              console.log(`Current borderRadius: 20, paddingHorizontal: 16, paddingVertical: 8`);
               setSearchType(type.value);
             }}
             android_ripple={{ color: 'rgba(88, 101, 242, 0.3)' }}
@@ -417,23 +417,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   filterChip: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
     alignSelf: 'flex-start',
   },
   filterChipActive: {
     ...DesignSystem.shadows.small,
   },
   filterText: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: '600',
   },
   content: {
     flex: 1,
   },
   contentContainer: {
-    padding: 16,
+    paddingHorizontal: 16,
+    paddingTop: 8,
+    paddingBottom: 16,
   },
   loadingContainer: {
     paddingVertical: 64,
