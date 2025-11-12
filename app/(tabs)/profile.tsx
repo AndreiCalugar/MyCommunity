@@ -1,10 +1,12 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuthStore } from '@/lib/stores/authStore';
 import { Avatar } from '@/components/shared/Avatar';
 import { Button } from '@/components/shared/Button';
+import { DesignSystem } from '@/constants/designSystem';
 
 export default function ProfileScreen() {
   const colorScheme = useColorScheme();
@@ -37,13 +39,21 @@ export default function ProfileScreen() {
   };
 
   return (
-    <ScrollView
-      style={[styles.container, { backgroundColor: colors.background }]}
-      contentContainerStyle={styles.content}
-    >
-      <View style={styles.header}>
-        <Text style={[styles.title, { color: colors.text }]}>Profile</Text>
-      </View>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      {/* Header with Gradient */}
+      <LinearGradient
+        colors={DesignSystem.colors.gradients.primary}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.gradientHeader}
+      >
+        <Text style={styles.title}>Profile</Text>
+      </LinearGradient>
+
+      <ScrollView
+        style={styles.scrollContent}
+        contentContainerStyle={styles.content}
+      >
 
       <View style={[styles.profileCard, { backgroundColor: colors.surface }]}>
         <View style={styles.avatarContainer}>
@@ -145,7 +155,8 @@ export default function ProfileScreen() {
           fullWidth
         />
       </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 }
 
@@ -153,16 +164,22 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  content: {
-    padding: 16,
-  },
-  header: {
-    marginBottom: 24,
+  gradientHeader: {
+    paddingHorizontal: DesignSystem.spacing.lg,
     paddingTop: 48,
+    paddingBottom: DesignSystem.spacing.lg,
   },
   title: {
-    fontSize: 32,
-    fontWeight: 'bold',
+    fontSize: DesignSystem.typography.fontSize.xxxl,
+    fontWeight: DesignSystem.typography.fontWeight.extrabold,
+    color: '#FFFFFF',
+    letterSpacing: DesignSystem.typography.letterSpacing.tight,
+  },
+  scrollContent: {
+    flex: 1,
+  },
+  content: {
+    padding: 16,
   },
   profileCard: {
     borderRadius: 12,

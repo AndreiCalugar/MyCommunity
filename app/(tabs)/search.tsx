@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useColorScheme } from '@/hooks/use-color-scheme';
@@ -24,6 +25,7 @@ import {
   getResultCount,
 } from '@/lib/api/search';
 import { Avatar } from '@/components/shared/Avatar';
+import { DesignSystem } from '@/constants/designSystem';
 
 export default function SearchScreen() {
   const colorScheme = useColorScheme();
@@ -157,10 +159,15 @@ export default function SearchScreen() {
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      {/* Header */}
-      <View style={[styles.header, { borderBottomColor: colors.border }]}>
-        <Text style={[styles.headerTitle, { color: colors.text }]}>Search</Text>
-      </View>
+      {/* Header with Gradient */}
+      <LinearGradient
+        colors={DesignSystem.colors.gradients.primary}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.gradientHeader}
+      >
+        <Text style={styles.headerTitle}>Search</Text>
+      </LinearGradient>
 
       {/* Search Bar */}
       <View style={[styles.searchBar, { backgroundColor: colors.surface }]}>
@@ -368,15 +375,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  header: {
-    paddingTop: 50,
-    paddingHorizontal: 16,
-    paddingBottom: 12,
-    borderBottomWidth: 1,
+  gradientHeader: {
+    paddingHorizontal: DesignSystem.spacing.lg,
+    paddingTop: 48,
+    paddingBottom: DesignSystem.spacing.lg,
   },
   headerTitle: {
-    fontSize: 32,
-    fontWeight: 'bold',
+    fontSize: DesignSystem.typography.fontSize.xxxl,
+    fontWeight: DesignSystem.typography.fontWeight.extrabold,
+    color: '#FFFFFF',
+    letterSpacing: DesignSystem.typography.letterSpacing.tight,
   },
   searchBar: {
     flexDirection: 'row',
