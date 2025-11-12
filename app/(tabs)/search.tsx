@@ -409,20 +409,16 @@ const styles = StyleSheet.create({
     gap: DesignSystem.spacing.sm,
   },
   filterChip: {
-    paddingHorizontal: DesignSystem.spacing.lg,
-    paddingVertical: DesignSystem.spacing.sm,
-    borderRadius: DesignSystem.borderRadius.round,
-    minHeight: 36,
-    justifyContent: 'center',
-    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
   },
   filterChipActive: {
     ...DesignSystem.shadows.small,
   },
   filterText: {
-    fontSize: DesignSystem.typography.fontSize.sm,
-    fontWeight: DesignSystem.typography.fontWeight.semibold as any,
-    textAlign: 'center',
+    fontSize: 14,
+    fontWeight: '600',
   },
   content: {
     flex: 1,
