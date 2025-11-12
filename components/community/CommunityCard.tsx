@@ -1,9 +1,12 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, Image, Animated } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { Community } from '@/lib/stores/communityStore';
-import { Button } from '@/components/shared/Button';
+import { AnimatedButton } from '@/components/ui/AnimatedButton';
 import { Ionicons } from '@expo/vector-icons';
+import { DesignSystem, getColors } from '@/constants/designSystem';
+import { EnhancedCard } from '@/components/ui/EnhancedCard';
 
 interface CommunityCardProps {
   community: Community;
@@ -24,13 +27,7 @@ export const CommunityCard: React.FC<CommunityCardProps> = ({
 }) => {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
-
-  const colors = {
-    background: isDark ? '#2B2D31' : '#FFFFFF',
-    text: isDark ? '#FFFFFF' : '#060607',
-    secondaryText: isDark ? '#B5BAC1' : '#4E5058',
-    border: isDark ? '#4E5058' : '#E0E0E0',
-  };
+  const colors = getColors(isDark);
 
   const handleCardPress = () => {
     if (onPress) {
@@ -47,86 +44,103 @@ export const CommunityCard: React.FC<CommunityCardProps> = ({
   };
 
   return (
-    <TouchableOpacity
-      style={[
-        styles.card,
-        { backgroundColor: colors.background, borderColor: colors.border },
-      ]}
+    <EnhancedCard
       onPress={handleCardPress}
-      activeOpacity={0.7}
-      disabled={!onPress}
+      shadow="large"
+      padding={0}
+      style={styles.card}
     >
-      {/* Community Image */}
+      {/* Community Image with Gradient Overlay */}
       <View style={styles.imageContainer}>
         {community.image_url ? (
-          <Image
-            source={{ uri: community.image_url }}
-            style={styles.image}
-            resizeMode="cover"
-          />
+          <>
+            <Image
+              source={{ uri: community.image_url }}
+              style={styles.image}
+              resizeMode="cover"
+            />
+            <LinearGradient
+              colors={['transparent', 'rgba(0,0,0,0.6)']}
+              style={styles.imageGradient}
+            />
+          </>
         ) : (
-          <View style={[styles.imagePlaceholder, { backgroundColor: '#5865F2' }]}>
-            <Ionicons name="people" size={32} color="#FFFFFF" />
-          </View>
+          <LinearGradient
+            colors={DesignSystem.colors.gradients.primary}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.imagePlaceholder}
+          >
+            <Ionicons name="people" size={40} color="#FFFFFF" />
+          </LinearGradient>
         )}
+        
+        {/* Member Count Badge */}
+        <View style={[styles.memberBadge, { backgroundColor: isDark ? 'rgba(0,0,0,0.7)' : 'rgba(255,255,255,0.95)' }]}>
+          <Ionicons name="people" size={16} color={colors.text} />
+          <Text style={[styles.memberBadgeText, { color: colors.text }]}>
+            {community.member_count}
+          </Text>
+        </View>
       </View>
 
       {/* Community Info */}
       <View style={styles.content}>
-        <View style={styles.header}>
-          <Text style={[styles.name, { color: colors.text }]} numberOfLines={1}>
-            {community.name}
-          </Text>
-          <View style={styles.memberCount}>
-            <Ionicons name="people-outline" size={14} color={colors.secondaryText} />
-            <Text style={[styles.memberCountText, { color: colors.secondaryText }]}>
-              {community.member_count}
-            </Text>
-          </View>
-        </View>
+        <Text style={[styles.name, { color: colors.text }]} numberOfLines={1}>
+          {community.name}
+        </Text>
 
         <Text
-          style={[styles.description, { color: colors.secondaryText }]}
+          style={[styles.description, { color: colors.textSecondary }]}
           numberOfLines={2}
         >
           {community.short_description || community.description}
         </Text>
 
         {/* Join/Leave Button */}
-        <View style={styles.actions}>
-          <Button
-            title={isMember ? 'Leave' : 'Join'}
-            onPress={handleButtonPress}
-            variant={isMember ? 'outline' : 'primary'}
-            size="small"
-            loading={loading}
-            style={styles.button}
-          />
-        </View>
+        <AnimatedButton
+          title={isMember ? 'Leave' : 'Join Community'}
+          onPress={handleButtonPress}
+          variant={isMember ? 'secondary' : 'gradient'}
+          size="medium"
+          loading={loading}
+          fullWidth
+          icon={
+            !loading ? (
+              <Ionicons
+                name={isMember ? 'exit-outline' : 'add-circle-outline'}
+                size={18}
+                color="#FFFFFF"
+                style={{ marginRight: 8 }}
+              />
+            ) : undefined
+          }
+        />
       </View>
-    </TouchableOpacity>
+    </EnhancedCard>
   );
 };
 
 const styles = StyleSheet.create({
   card: {
-    borderRadius: 12,
-    borderWidth: 1,
-    marginBottom: 16,
+    marginBottom: DesignSystem.spacing.lg,
     overflow: 'hidden',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
   },
   imageContainer: {
     width: '100%',
-    height: 160,
+    height: 180,
+    position: 'relative',
   },
   image: {
     width: '100%',
     height: '100%',
+  },
+  imageGradient: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: '50%',
   },
   imagePlaceholder: {
     width: '100%',
@@ -134,41 +148,35 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  content: {
-    padding: 16,
-  },
-  header: {
+  memberBadge: {
+    position: 'absolute',
+    top: DesignSystem.spacing.md,
+    right: DesignSystem.spacing.md,
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 8,
+    paddingHorizontal: DesignSystem.spacing.sm,
+    paddingVertical: DesignSystem.spacing.xs,
+    borderRadius: DesignSystem.borderRadius.round,
+    gap: 4,
+    ...DesignSystem.shadows.medium,
+  },
+  memberBadgeText: {
+    fontSize: DesignSystem.typography.fontSize.sm,
+    fontWeight: DesignSystem.typography.fontWeight.semibold,
+  },
+  content: {
+    padding: DesignSystem.spacing.lg,
   },
   name: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    flex: 1,
-    marginRight: 8,
-  },
-  memberCount: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-  },
-  memberCountText: {
-    fontSize: 14,
-    fontWeight: '500',
+    fontSize: DesignSystem.typography.fontSize.xl,
+    fontWeight: DesignSystem.typography.fontWeight.bold,
+    marginBottom: DesignSystem.spacing.sm,
+    letterSpacing: DesignSystem.typography.letterSpacing.tight,
   },
   description: {
-    fontSize: 14,
-    lineHeight: 20,
-    marginBottom: 12,
-  },
-  actions: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-  },
-  button: {
-    minWidth: 80,
+    fontSize: DesignSystem.typography.fontSize.md,
+    lineHeight: 22,
+    marginBottom: DesignSystem.spacing.lg,
   },
 });
 

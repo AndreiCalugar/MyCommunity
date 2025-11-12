@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef } from 'react';
 import {
   View,
   Text,
@@ -7,12 +7,15 @@ import {
   TouchableOpacity,
   Alert,
   Pressable,
+  Animated,
 } from 'react-native';
 import { router } from 'expo-router';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { Post } from '@/lib/api/posts';
 import { Avatar } from '@/components/shared/Avatar';
 import { Ionicons } from '@expo/vector-icons';
+import { EnhancedCard } from '@/components/ui/EnhancedCard';
+import { DesignSystem, getColors } from '@/constants/designSystem';
 
 interface PostCardProps {
   post: Post;
@@ -35,19 +38,27 @@ export const PostCard: React.FC<PostCardProps> = ({
 }) => {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
-
-  const colors = {
-    background: isDark ? '#2B2D31' : '#FFFFFF',
-    text: isDark ? '#FFFFFF' : '#060607',
-    secondaryText: isDark ? '#B5BAC1' : '#4E5058',
-    border: isDark ? '#4E5058' : '#E0E0E0',
-    likeActive: '#ED4245',
-  };
+  const colors = getColors(isDark);
+  const likeScale = useRef(new Animated.Value(1)).current;
 
   const isOwnPost = currentUserId === post.user_id;
   const hasLiked = post.user_has_liked;
 
   const handleLike = () => {
+    // Animate heart
+    Animated.sequence([
+      Animated.timing(likeScale, {
+        toValue: 1.3,
+        duration: 150,
+        useNativeDriver: true,
+      }),
+      Animated.spring(likeScale, {
+        toValue: 1,
+        friction: 3,
+        useNativeDriver: true,
+      }),
+    ]).start();
+
     if (hasLiked) {
       onUnlike(post.id);
     } else {
@@ -91,7 +102,7 @@ export const PostCard: React.FC<PostCardProps> = ({
   };
 
   return (
-    <View style={[styles.card, { backgroundColor: colors.background, borderColor: colors.border }]}>
+    <EnhancedCard shadow="medium" style={styles.card} pressable={false}>
       {/* Header */}
       <View style={styles.header}>
         <Pressable onPress={handleUserPress}>
@@ -107,14 +118,14 @@ export const PostCard: React.FC<PostCardProps> = ({
               {post.profile?.full_name || 'Unknown User'}
             </Text>
           </Pressable>
-          <Text style={[styles.timestamp, { color: colors.secondaryText }]}>
+          <Text style={[styles.timestamp, { color: colors.textSecondary }]}>
             {timeAgo(post.created_at)}
           </Text>
         </View>
         {isOwnPost && (
-          <TouchableOpacity onPress={handleDelete} style={styles.deleteButton}>
-            <Ionicons name="trash-outline" size={20} color={colors.secondaryText} />
-          </TouchableOpacity>
+          <Pressable onPress={handleDelete} style={styles.deleteButton}>
+            <Ionicons name="trash-outline" size={22} color={DesignSystem.colors.danger} />
+          </Pressable>
         )}
       </View>
 
@@ -128,90 +139,97 @@ export const PostCard: React.FC<PostCardProps> = ({
 
       {/* Actions */}
       <View style={styles.actions}>
-        <TouchableOpacity
+        <Pressable
           style={styles.actionButton}
           onPress={handleLike}
           disabled={loading}
+          android_ripple={{ color: 'rgba(237, 66, 69, 0.1)' }}
         >
-          <Ionicons
-            name={hasLiked ? 'heart' : 'heart-outline'}
-            size={22}
-            color={hasLiked ? colors.likeActive : colors.secondaryText}
-          />
+          <Animated.View style={{ transform: [{ scale: likeScale }] }}>
+            <Ionicons
+              name={hasLiked ? 'heart' : 'heart-outline'}
+              size={24}
+              color={hasLiked ? DesignSystem.colors.danger : colors.textSecondary}
+            />
+          </Animated.View>
           <Text
             style={[
               styles.actionText,
-              { color: hasLiked ? colors.likeActive : colors.secondaryText },
+              { color: hasLiked ? DesignSystem.colors.danger : colors.textSecondary },
             ]}
           >
             {post.likes_count}
           </Text>
-        </TouchableOpacity>
+        </Pressable>
 
-        <TouchableOpacity
+        <Pressable
           style={styles.actionButton}
           onPress={() => onComment(post.id)}
+          android_ripple={{ color: 'rgba(88, 101, 242, 0.1)' }}
         >
-          <Ionicons name="chatbubble-outline" size={20} color={colors.secondaryText} />
-          <Text style={[styles.actionText, { color: colors.secondaryText }]}>
+          <Ionicons name="chatbubble-outline" size={22} color={colors.textSecondary} />
+          <Text style={[styles.actionText, { color: colors.textSecondary }]}>
             {post.comments_count}
           </Text>
-        </TouchableOpacity>
+        </Pressable>
       </View>
-    </View>
+    </EnhancedCard>
   );
 };
 
 const styles = StyleSheet.create({
   card: {
-    borderRadius: 12,
-    borderWidth: 1,
-    padding: 16,
-    marginBottom: 16,
+    marginBottom: DesignSystem.spacing.lg,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: DesignSystem.spacing.md,
   },
   headerInfo: {
     flex: 1,
-    marginLeft: 12,
+    marginLeft: DesignSystem.spacing.md,
   },
   authorName: {
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: DesignSystem.typography.fontSize.md,
+    fontWeight: DesignSystem.typography.fontWeight.semibold,
     marginBottom: 2,
   },
   timestamp: {
-    fontSize: 12,
+    fontSize: DesignSystem.typography.fontSize.xs,
   },
   deleteButton: {
-    padding: 4,
+    padding: DesignSystem.spacing.xs,
   },
   content: {
-    fontSize: 15,
+    fontSize: DesignSystem.typography.fontSize.md,
     lineHeight: 22,
-    marginBottom: 12,
+    marginBottom: DesignSystem.spacing.md,
   },
   image: {
     width: '100%',
-    height: 250,
-    borderRadius: 8,
-    marginBottom: 12,
+    height: 280,
+    borderRadius: DesignSystem.borderRadius.medium,
+    marginBottom: DesignSystem.spacing.md,
   },
   actions: {
     flexDirection: 'row',
-    gap: 24,
+    gap: DesignSystem.spacing.xl,
+    paddingTop: DesignSystem.spacing.sm,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(0,0,0,0.05)',
   },
   actionButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: DesignSystem.spacing.sm,
+    paddingVertical: DesignSystem.spacing.xs,
+    paddingHorizontal: DesignSystem.spacing.sm,
+    borderRadius: DesignSystem.borderRadius.medium,
   },
   actionText: {
-    fontSize: 14,
-    fontWeight: '500',
+    fontSize: DesignSystem.typography.fontSize.md,
+    fontWeight: DesignSystem.typography.fontWeight.semibold,
   },
 });
 

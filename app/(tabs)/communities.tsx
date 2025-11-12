@@ -6,8 +6,8 @@ import {
   FlatList,
   RefreshControl,
   Alert,
-  ActivityIndicator,
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuthStore } from '@/lib/stores/authStore';
@@ -21,7 +21,10 @@ import {
 } from '@/lib/api/communities';
 import { CommunityCard } from '@/components/community/CommunityCard';
 import { CategoryFilter } from '@/components/community/CategoryFilter';
-import { Button } from '@/components/shared/Button';
+import { AnimatedButton } from '@/components/ui/AnimatedButton';
+import { SkeletonList } from '@/components/ui/SkeletonLoader';
+import { EmptyState } from '@/components/ui/EmptyState';
+import { DesignSystem, getColors } from '@/constants/designSystem';
 
 export default function CommunitiesScreen() {
   const colorScheme = useColorScheme();
@@ -36,11 +39,7 @@ export default function CommunitiesScreen() {
   const [showMyCommunities, setShowMyCommunities] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
-  const colors = {
-    background: isDark ? '#1E1F22' : '#FFFFFF',
-    text: isDark ? '#FFFFFF' : '#060607',
-    secondaryText: isDark ? '#B5BAC1' : '#4E5058',
-  };
+  const colors = getColors(isDark);
 
   // Load communities on mount
   useEffect(() => {
@@ -209,46 +208,49 @@ export default function CommunitiesScreen() {
   const displayedCommunities = filteredCommunities;
 
   const renderEmpty = () => (
-    <View style={styles.emptyContainer}>
-      <Text style={[styles.emptyText, { color: colors.secondaryText }]}>
-        {showMyCommunities
-          ? 'You haven\'t joined any communities yet'
-          : 'No communities available'}
-      </Text>
-    </View>
+    <EmptyState
+      icon={showMyCommunities ? 'people-outline' : 'search-outline'}
+      title={showMyCommunities ? 'No Communities Yet' : 'No Communities Found'}
+      description={
+        showMyCommunities
+          ? 'Start exploring and join communities that interest you!'
+          : selectedCategories.length > 0
+          ? 'Try adjusting your filters or check back later'
+          : 'No communities available at the moment'
+      }
+      actionTitle={showMyCommunities ? 'Explore Communities' : undefined}
+      onAction={showMyCommunities ? () => setShowMyCommunities(false) : undefined}
+    />
   );
-
-  if (loading) {
-    return (
-      <View style={[styles.container, styles.centered, { backgroundColor: colors.background }]}>
-        <ActivityIndicator size="large" color="#5865F2" />
-      </View>
-    );
-  }
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={[styles.title, { color: colors.text }]}>Communities</Text>
-        <Text style={[styles.subtitle, { color: colors.secondaryText }]}>
+      {/* Header with Gradient */}
+      <LinearGradient
+        colors={DesignSystem.colors.gradients.primary}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.gradientHeader}
+      >
+        <Text style={styles.title}>Communities</Text>
+        <Text style={styles.subtitle}>
           Discover and join communities
         </Text>
-      </View>
+      </LinearGradient>
 
       {/* Filter Buttons */}
       <View style={styles.filterContainer}>
-        <Button
+        <AnimatedButton
           title="All Communities"
           onPress={() => setShowMyCommunities(false)}
-          variant={!showMyCommunities ? 'primary' : 'outline'}
+          variant={!showMyCommunities ? 'gradient' : 'secondary'}
           size="small"
           style={styles.filterButton}
         />
-        <Button
+        <AnimatedButton
           title="My Communities"
           onPress={() => setShowMyCommunities(true)}
-          variant={showMyCommunities ? 'primary' : 'outline'}
+          variant={showMyCommunities ? 'gradient' : 'secondary'}
           size="small"
           style={styles.filterButton}
         />
@@ -264,29 +266,35 @@ export default function CommunitiesScreen() {
       )}
 
       {/* Communities List */}
-      <FlatList
-        data={displayedCommunities}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <CommunityCard
-            community={item}
-            isMember={isMember(item.id)}
-            onJoin={handleJoin}
-            onLeave={handleLeave}
-            onPress={handleCommunityPress}
-            loading={loadingCommunityId === item.id}
-          />
-        )}
-        contentContainerStyle={styles.listContent}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={handleRefresh}
-            tintColor="#5865F2"
-          />
-        }
-        ListEmptyComponent={renderEmpty}
-      />
+      {loading ? (
+        <View style={styles.listContent}>
+          <SkeletonList count={4} />
+        </View>
+      ) : (
+        <FlatList
+          data={displayedCommunities}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <CommunityCard
+              community={item}
+              isMember={isMember(item.id)}
+              onJoin={handleJoin}
+              onLeave={handleLeave}
+              onPress={handleCommunityPress}
+              loading={loadingCommunityId === item.id}
+            />
+          )}
+          contentContainerStyle={styles.listContent}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={handleRefresh}
+              tintColor={DesignSystem.colors.primary}
+            />
+          }
+          ListEmptyComponent={renderEmpty}
+        />
+      )}
     </View>
   );
 }
@@ -295,42 +303,34 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  centered: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  header: {
-    paddingHorizontal: 16,
+  gradientHeader: {
+    paddingHorizontal: DesignSystem.spacing.lg,
     paddingTop: 48,
-    paddingBottom: 16,
+    paddingBottom: DesignSystem.spacing.xl,
   },
   title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    marginBottom: 4,
+    fontSize: DesignSystem.typography.fontSize.xxxl,
+    fontWeight: DesignSystem.typography.fontWeight.extrabold,
+    color: '#FFFFFF',
+    marginBottom: DesignSystem.spacing.xs,
+    letterSpacing: DesignSystem.typography.letterSpacing.tight,
   },
   subtitle: {
-    fontSize: 14,
+    fontSize: DesignSystem.typography.fontSize.md,
+    color: 'rgba(255, 255, 255, 0.9)',
   },
   filterContainer: {
     flexDirection: 'row',
-    paddingHorizontal: 16,
-    paddingBottom: 16,
-    gap: 12,
+    paddingHorizontal: DesignSystem.spacing.lg,
+    paddingTop: DesignSystem.spacing.lg,
+    paddingBottom: DesignSystem.spacing.md,
+    gap: DesignSystem.spacing.md,
   },
   filterButton: {
     flex: 1,
   },
   listContent: {
-    padding: 16,
-  },
-  emptyContainer: {
-    paddingVertical: 48,
-    alignItems: 'center',
-  },
-  emptyText: {
-    fontSize: 16,
-    textAlign: 'center',
+    padding: DesignSystem.spacing.lg,
   },
 });
 
