@@ -405,12 +405,12 @@ const styles = StyleSheet.create({
   },
   filtersContainer: {
     paddingHorizontal: DesignSystem.spacing.lg,
-    paddingVertical: DesignSystem.spacing.md,
+    paddingVertical: DesignSystem.spacing.sm,
     gap: DesignSystem.spacing.sm,
   },
   filterChip: {
     paddingHorizontal: 16,
-    paddingVertical: 8,
+    paddingVertical: 6,
     borderRadius: 20,
   },
   filterChipActive: {
