@@ -47,6 +47,7 @@ export default function TimelineScreen() {
   };
 
   useEffect(() => {
+    console.log('[Timeline] params.id:', params.id);
     if (params.id) {
       loadPosts();
 
@@ -59,18 +60,27 @@ export default function TimelineScreen() {
       return () => {
         subscription.unsubscribe();
       };
+    } else {
+      console.log('[Timeline] No params.id, setting loading false');
+      setLoading(false);
     }
   }, [params.id]);
 
   const loadPosts = async () => {
-    if (!params.id) return;
+    if (!params.id) {
+      console.log('[Timeline] loadPosts: No params.id');
+      setLoading(false);
+      return;
+    }
 
     try {
+      console.log('[Timeline] Starting to load posts for community:', params.id);
       setLoading(true);
       const data = await fetchPosts(params.id, user?.id);
+      console.log('[Timeline] Posts loaded:', data.length);
       setPosts(data);
     } catch (error: any) {
-      console.error('Error loading posts:', error);
+      console.error('[Timeline] Error loading posts:', error);
       // Check if it's a permission error (not a member)
       if (error.message?.includes('permission') || error.code === 'PGRST301') {
         Alert.alert(
@@ -78,9 +88,10 @@ export default function TimelineScreen() {
           'You need to join this community to view posts. Go back and tap the Join button.'
         );
       } else {
-        Alert.alert('Error', 'Failed to load posts');
+        Alert.alert('Error', 'Failed to load posts: ' + (error.message || 'Unknown error'));
       }
     } finally {
+      console.log('[Timeline] Finishing load, setting loading false');
       setLoading(false);
       setRefreshing(false);
     }

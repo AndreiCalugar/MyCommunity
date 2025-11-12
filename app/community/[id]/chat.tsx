@@ -153,8 +153,8 @@ export default function CommunityChatScreen() {
   return (
     <KeyboardAvoidingView
       style={[styles.container, { backgroundColor: colors.background }]}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 140 : 0}
     >
       <FlatList
         ref={flatListRef}
@@ -165,6 +165,7 @@ export default function CommunityChatScreen() {
         ListEmptyComponent={renderEmpty}
         onContentSizeChange={scrollToBottom}
         onLayout={scrollToBottom}
+        keyboardShouldPersistTaps="handled"
       />
       <ChatInput onSend={handleSendMessage} colorScheme={colorScheme} disabled={sending} />
     </KeyboardAvoidingView>
