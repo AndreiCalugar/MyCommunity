@@ -7,6 +7,8 @@ import {
   Text,
   Alert,
   Pressable,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -184,7 +186,11 @@ export default function DirectMessageChatScreen() {
   }
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <KeyboardAvoidingView
+      style={[styles.container, { backgroundColor: colors.background }]}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={0}
+    >
       {/* Header */}
       <View style={[styles.header, { backgroundColor: colors.background, borderBottomColor: colors.border }]}>
         <Pressable
@@ -234,7 +240,7 @@ export default function DirectMessageChatScreen() {
         disabled={sending}
         colorScheme={colorScheme}
       />
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 

@@ -6,6 +6,8 @@ import {
   ActivityIndicator,
   Text,
   Alert,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import { useGlobalSearchParams } from 'expo-router';
 import { useColorScheme } from '@/hooks/use-color-scheme';
@@ -149,7 +151,11 @@ export default function CommunityChatScreen() {
   }
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <KeyboardAvoidingView
+      style={[styles.container, { backgroundColor: colors.background }]}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
+    >
       <FlatList
         ref={flatListRef}
         data={messages}
@@ -161,7 +167,7 @@ export default function CommunityChatScreen() {
         onLayout={scrollToBottom}
       />
       <ChatInput onSend={handleSendMessage} colorScheme={colorScheme} disabled={sending} />
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
