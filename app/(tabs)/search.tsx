@@ -136,17 +136,20 @@ export default function SearchScreen() {
             key={type.value}
             style={[
               styles.filterChip,
+              searchType === type.value && styles.filterChipActive,
               {
-                backgroundColor: searchType === type.value ? colors.active : colors.surface,
-                borderColor: colors.border,
+                backgroundColor: searchType === type.value 
+                  ? DesignSystem.colors.primary 
+                  : isDark ? 'rgba(88, 101, 242, 0.1)' : colors.surface,
               },
             ]}
             onPress={() => setSearchType(type.value)}
+            android_ripple={{ color: 'rgba(88, 101, 242, 0.3)' }}
           >
             <Text
               style={[
                 styles.filterText,
-                { color: searchType === type.value ? '#FFFFFF' : colors.text },
+                { color: searchType === type.value ? '#FFFFFF' : DesignSystem.colors.primary },
               ]}
             >
               {type.label}
@@ -401,19 +404,25 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
   },
   filtersContainer: {
-    paddingHorizontal: 16,
-    paddingBottom: 12,
-    gap: 8,
+    paddingHorizontal: DesignSystem.spacing.lg,
+    paddingVertical: DesignSystem.spacing.md,
+    gap: DesignSystem.spacing.sm,
   },
   filterChip: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 16,
-    borderWidth: 1,
+    paddingHorizontal: DesignSystem.spacing.lg,
+    paddingVertical: DesignSystem.spacing.sm,
+    borderRadius: DesignSystem.borderRadius.round,
+    minHeight: 36,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  filterChipActive: {
+    ...DesignSystem.shadows.small,
   },
   filterText: {
-    fontSize: 14,
-    fontWeight: '600',
+    fontSize: DesignSystem.typography.fontSize.sm,
+    fontWeight: DesignSystem.typography.fontWeight.semibold as any,
+    textAlign: 'center',
   },
   content: {
     flex: 1,
