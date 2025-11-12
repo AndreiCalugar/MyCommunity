@@ -6,7 +6,9 @@ import {
   Image,
   TouchableOpacity,
   Alert,
+  Pressable,
 } from 'react-native';
+import { router } from 'expo-router';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { Post } from '@/lib/api/posts';
 import { Avatar } from '@/components/shared/Avatar';
@@ -82,19 +84,29 @@ export const PostCard: React.FC<PostCardProps> = ({
     return postDate.toLocaleDateString();
   };
 
+  const handleUserPress = () => {
+    if (post.user_id) {
+      router.push(`/user/${post.user_id}`);
+    }
+  };
+
   return (
     <View style={[styles.card, { backgroundColor: colors.background, borderColor: colors.border }]}>
       {/* Header */}
       <View style={styles.header}>
-        <Avatar
-          imageUrl={post.profile?.avatar_url}
-          name={post.profile?.full_name || 'Unknown'}
-          size="medium"
-        />
+        <Pressable onPress={handleUserPress}>
+          <Avatar
+            imageUrl={post.profile?.avatar_url}
+            name={post.profile?.full_name || 'Unknown'}
+            size="medium"
+          />
+        </Pressable>
         <View style={styles.headerInfo}>
-          <Text style={[styles.authorName, { color: colors.text }]}>
-            {post.profile?.full_name || 'Unknown User'}
-          </Text>
+          <Pressable onPress={handleUserPress}>
+            <Text style={[styles.authorName, { color: colors.text }]}>
+              {post.profile?.full_name || 'Unknown User'}
+            </Text>
+          </Pressable>
           <Text style={[styles.timestamp, { color: colors.secondaryText }]}>
             {timeAgo(post.created_at)}
           </Text>

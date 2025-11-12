@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, Pressable, Alert } from 'react-native';
+import { router } from 'expo-router';
 import { Avatar } from '../shared/Avatar';
 import { Ionicons } from '@expo/vector-icons';
 import { ChatMessage } from '@/lib/api/chat';
@@ -26,6 +27,12 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
     otherText: isDark ? '#FFFFFF' : '#060607',
     timestamp: isDark ? '#B5BAC1' : '#4E5058',
     name: isDark ? '#B5BAC1' : '#4E5058',
+  };
+
+  const handleUserPress = () => {
+    if (message.user_id && !isOwnMessage) {
+      router.push(`/user/${message.user_id}`);
+    }
   };
 
   const handleLongPress = () => {
@@ -73,17 +80,21 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
       style={[styles.container, isOwnMessage && styles.ownMessageContainer]}
     >
       {!isOwnMessage && (
-        <Avatar
-          imageUrl={message.profile.avatar_url}
-          name={message.profile.full_name}
-          size="small"
-        />
+        <Pressable onPress={handleUserPress}>
+          <Avatar
+            imageUrl={message.profile.avatar_url}
+            name={message.profile.full_name}
+            size="small"
+          />
+        </Pressable>
       )}
       <View style={styles.messageContent}>
         {!isOwnMessage && (
-          <Text style={[styles.senderName, { color: colors.name }]}>
-            {message.profile.full_name}
-          </Text>
+          <Pressable onPress={handleUserPress}>
+            <Text style={[styles.senderName, { color: colors.name }]}>
+              {message.profile.full_name}
+            </Text>
+          </Pressable>
         )}
         <View
           style={[

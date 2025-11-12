@@ -23,11 +23,28 @@ export const fetchMessages = async (
   limit: number = 50,
   offset: number = 0
 ): Promise<ChatMessage[]> => {
-  // Fetch messages
+  // First, get the conversation_id for this community
+  const { data: conversation, error: convError } = await supabase
+    .from('conversations')
+    .select('id')
+    .eq('type', 'community')
+    .eq('community_id', communityId)
+    .single();
+
+  if (convError) {
+    console.error('Error fetching conversation:', convError);
+    throw convError;
+  }
+
+  if (!conversation) {
+    return [];
+  }
+
+  // Fetch messages using conversation_id
   const { data: messages, error } = await supabase
     .from('chat_messages')
-    .select('id, community_id, user_id, message, created_at, updated_at, deleted_at')
-    .eq('community_id', communityId)
+    .select('id, community_id, conversation_id, user_id, message, created_at, updated_at, deleted_at')
+    .eq('conversation_id', conversation.id)
     .is('deleted_at', null)
     .order('created_at', { ascending: false })
     .range(offset, offset + limit - 1);
@@ -71,10 +88,24 @@ export const sendMessage = async (
   userId: string,
   message: string
 ): Promise<ChatMessage | null> => {
+  // First, get the conversation_id for this community
+  const { data: conversation, error: convError } = await supabase
+    .from('conversations')
+    .select('id')
+    .eq('type', 'community')
+    .eq('community_id', communityId)
+    .single();
+
+  if (convError || !conversation) {
+    console.error('Error fetching conversation:', convError);
+    throw convError || new Error('Conversation not found');
+  }
+
   const { data, error } = await supabase
     .from('chat_messages')
     .insert({
       community_id: communityId,
+      conversation_id: conversation.id,
       user_id: userId,
       message,
     })

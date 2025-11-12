@@ -6,8 +6,9 @@ import {
   FlatList,
   ActivityIndicator,
   Alert,
+  Pressable,
 } from 'react-native';
-import { useGlobalSearchParams } from 'expo-router';
+import { useGlobalSearchParams, router } from 'expo-router';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { fetchCommunityMembers, CommunityMember } from '@/lib/api/communityDetail';
 import { Avatar } from '@/components/shared/Avatar';
@@ -70,8 +71,15 @@ export default function CommunityMembersScreen() {
     }
   };
 
+  const handleMemberPress = (userId: string) => {
+    router.push(`/user/${userId}`);
+  };
+
   const renderMember = ({ item }: { item: CommunityMember }) => (
-    <View style={[styles.memberCard, { backgroundColor: colors.surface }]}>
+    <Pressable 
+      style={[styles.memberCard, { backgroundColor: colors.surface }]}
+      onPress={() => handleMemberPress(item.user_id)}
+    >
       <Avatar
         imageUrl={item.profile.avatar_url}
         name={item.profile.full_name}
@@ -117,7 +125,7 @@ export default function CommunityMembersScreen() {
           </View>
         </View>
       </View>
-    </View>
+    </Pressable>
   );
 
   const renderEmpty = () => (
