@@ -9,7 +9,8 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { DesignSystem } from '@/constants/designSystem';
+import { useColorScheme } from '@/hooks/use-color-scheme';
+import { DesignSystem, getColors } from '@/constants/designSystem';
 
 interface AnimatedButtonProps {
   title: string;
@@ -36,6 +37,9 @@ export const AnimatedButton: React.FC<AnimatedButtonProps> = ({
   style,
   textStyle,
 }) => {
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+  const themeColors = getColors(isDark);
   const scaleValue = useRef(new Animated.Value(1)).current;
 
   const handlePressIn = () => {
@@ -62,7 +66,7 @@ export const AnimatedButton: React.FC<AnimatedButtonProps> = ({
 
   const variantColors = {
     primary: { bg: DesignSystem.colors.primary, text: '#FFFFFF', border: 'transparent' },
-    secondary: { bg: 'transparent', text: DesignSystem.colors.primary, border: DesignSystem.colors.primary },
+    secondary: { bg: isDark ? 'rgba(88, 101, 242, 0.1)' : '#F2F3F5', text: themeColors.text, border: themeColors.border },
     danger: { bg: DesignSystem.colors.danger, text: '#FFFFFF', border: 'transparent' },
     success: { bg: DesignSystem.colors.accent, text: '#FFFFFF', border: 'transparent' },
     gradient: { bg: 'transparent', text: '#FFFFFF', border: 'transparent' },
@@ -78,7 +82,7 @@ export const AnimatedButton: React.FC<AnimatedButtonProps> = ({
       paddingHorizontal,
       backgroundColor: variant === 'gradient' ? 'transparent' : bg,
       borderColor: border,
-      borderWidth: variant === 'secondary' ? 2 : 0,
+      borderWidth: variant === 'secondary' ? 1 : 0,
       opacity: disabled || loading ? 0.5 : 1,
       width: fullWidth ? '100%' : 'auto',
     },
