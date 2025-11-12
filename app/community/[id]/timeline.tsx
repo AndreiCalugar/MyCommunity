@@ -48,7 +48,12 @@ export default function TimelineScreen() {
 
   useEffect(() => {
     console.log('[Timeline] params.id:', params.id);
+    
+    // Reset state when params change
+    setPosts([]);
+    
     if (params.id) {
+      setLoading(true);
       loadPosts();
 
       // Subscribe to real-time updates

@@ -74,8 +74,8 @@ export default function MessagesInboxScreen() {
 
   const handleConversationPress = (conversation: Conversation) => {
     if (conversation.type === 'community' && conversation.community_id) {
-      // Navigate to community chat
-      router.push(`/community/${conversation.community_id}/chat`);
+      // Navigate to community timeline (default tab)
+      router.push(`/community/${conversation.community_id}/timeline`);
     } else {
       // Navigate to direct message chat
       router.push(`/chat/${conversation.id}`);
