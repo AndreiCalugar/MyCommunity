@@ -412,7 +412,8 @@ const styles = StyleSheet.create({
   },
   filtersContainer: {
     paddingHorizontal: DesignSystem.spacing.lg,
-    paddingVertical: DesignSystem.spacing.sm,
+    paddingTop: DesignSystem.spacing.sm,
+    paddingBottom: 4,
     gap: DesignSystem.spacing.sm,
     alignItems: 'center',
   },
@@ -434,7 +435,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     paddingHorizontal: 16,
-    paddingTop: 8,
+    paddingTop: 4,
     paddingBottom: 16,
   },
   loadingContainer: {
