@@ -6,6 +6,7 @@ import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuthStore } from '@/lib/stores/authStore';
+import { getInitialURL, subscribeToURLChanges, handleDeepLink } from '@/lib/linking/deepLinks';
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -36,6 +37,29 @@ export default function RootLayout() {
       router.replace('/(tabs)');
     }
   }, [session, segments, initialized]);
+
+  // Handle deep links
+  useEffect(() => {
+    if (!initialized || !session) return;
+
+    // Handle initial URL (when app is opened via deep link)
+    getInitialURL().then((url) => {
+      if (url) {
+        console.log('Initial deep link:', url);
+        handleDeepLink(url);
+      }
+    });
+
+    // Subscribe to URL changes (when app is already open)
+    const subscription = subscribeToURLChanges((url) => {
+      console.log('Deep link received:', url);
+      handleDeepLink(url);
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, [initialized, session]);
 
   if (!initialized) {
     // You can return a loading screen here

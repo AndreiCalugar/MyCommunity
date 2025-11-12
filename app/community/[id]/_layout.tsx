@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { Ionicons } from '@expo/vector-icons';
 import { fetchCommunityById } from '@/lib/api/communityDetail';
+import { ShareButton } from '@/components/ui/ShareButton';
 
 export default function CommunityDetailLayout() {
   const colorScheme = useColorScheme();
@@ -46,6 +47,15 @@ export default function CommunityDetailLayout() {
         },
         headerTintColor: isDark ? '#FFFFFF' : '#060607',
         headerTitle: communityName,
+        headerRight: () => (
+          <ShareButton
+            type="community"
+            id={params.id as string}
+            title={communityName}
+            iconOnly
+            style={{ marginRight: 8 }}
+          />
+        ),
       }}
     >
       <Tabs.Screen

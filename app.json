@@ -9,7 +9,12 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.mycommunity.app",
+      "associatedDomains": [
+        "applinks:mycommunity.app",
+        "applinks:*.mycommunity.app"
+      ]
     },
     "android": {
       "adaptiveIcon": {
@@ -20,7 +25,28 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "softwareKeyboardLayoutMode": "pan"
+      "softwareKeyboardLayoutMode": "pan",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "data": [
+            {
+              "scheme": "mycommunityapp"
+            },
+            {
+              "scheme": "https",
+              "host": "mycommunity.app",
+              "pathPrefix": "/"
+            },
+            {
+              "scheme": "https",
+              "host": "*.mycommunity.app",
+              "pathPrefix": "/"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
     },
     "web": {
       "output": "static",

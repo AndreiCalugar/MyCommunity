@@ -15,6 +15,7 @@ import { useAuthStore } from '@/lib/stores/authStore';
 import { supabase } from '@/lib/supabase';
 import { getOrCreateDirectConversation } from '@/lib/api/conversations';
 import { Avatar } from '@/components/shared/Avatar';
+import { ShareButton } from '@/components/ui/ShareButton';
 
 interface UserProfile {
   id: string;
@@ -152,7 +153,7 @@ export default function UserProfileScreen() {
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      {/* Header with close button */}
+      {/* Header with close and share buttons */}
       <View style={[styles.header, { borderBottomColor: colors.border }]}>
         <Pressable
           style={styles.closeButton}
@@ -161,7 +162,12 @@ export default function UserProfileScreen() {
           <Ionicons name="close" size={28} color={colors.text} />
         </Pressable>
         <Text style={[styles.headerTitle, { color: colors.text }]}>Profile</Text>
-        <View style={styles.closeButton} />
+        <ShareButton
+          type="user"
+          id={params.id as string}
+          title={profile.full_name}
+          iconOnly
+        />
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
