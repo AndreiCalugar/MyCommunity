@@ -143,8 +143,15 @@ export default function SearchScreen() {
                   : isDark ? 'rgba(88, 101, 242, 0.1)' : colors.surface,
               },
             ]}
-            onPress={() => setSearchType(type.value)}
+            onPress={() => {
+              console.log(`Filter button pressed: ${type.label}`);
+              console.log(`Current borderRadius: 20, paddingHorizontal: 12, paddingVertical: 6`);
+              setSearchType(type.value);
+            }}
             android_ripple={{ color: 'rgba(88, 101, 242, 0.3)' }}
+            onLayout={(e) => {
+              console.log(`${type.label} button layout - width: ${e.nativeEvent.layout.width}, height: ${e.nativeEvent.layout.height}`);
+            }}
           >
             <Text
               style={[
@@ -409,15 +416,15 @@ const styles = StyleSheet.create({
     gap: DesignSystem.spacing.sm,
   },
   filterChip: {
-    paddingHorizontal: 16,
+    paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: 20,
+    borderRadius: 16,
   },
   filterChipActive: {
     ...DesignSystem.shadows.small,
   },
   filterText: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '600',
   },
   content: {
