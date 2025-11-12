@@ -414,11 +414,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: DesignSystem.spacing.lg,
     paddingVertical: DesignSystem.spacing.sm,
     gap: DesignSystem.spacing.sm,
+    alignItems: 'center',
   },
   filterChip: {
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 16,
+    alignSelf: 'flex-start',
   },
   filterChipActive: {
     ...DesignSystem.shadows.small,
