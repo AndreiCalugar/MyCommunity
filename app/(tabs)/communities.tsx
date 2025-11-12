@@ -258,11 +258,13 @@ export default function CommunitiesScreen() {
 
       {/* Category Filter */}
       {!showMyCommunities && (
-        <CategoryFilter
-          selectedCategories={selectedCategories}
-          onToggleCategory={handleToggleCategory}
-          colorScheme={colorScheme}
-        />
+        <View style={styles.categoryFilterContainer}>
+          <CategoryFilter
+            selectedCategories={selectedCategories}
+            onToggleCategory={handleToggleCategory}
+            colorScheme={colorScheme}
+          />
+        </View>
       )}
 
       {/* Communities List */}
@@ -328,6 +330,9 @@ const styles = StyleSheet.create({
   },
   filterButton: {
     flex: 1,
+  },
+  categoryFilterContainer: {
+    paddingTop: DesignSystem.spacing.md,
   },
   listContent: {
     padding: DesignSystem.spacing.lg,

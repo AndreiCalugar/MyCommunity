@@ -155,8 +155,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    ...DesignSystem.shadows.small,
-    minHeight: 40, // Ensure minimum height
+    minHeight: 40,
   },
   text: {
     fontWeight: DesignSystem.typography.fontWeight.semibold,
