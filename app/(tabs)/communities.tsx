@@ -332,7 +332,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   categoryFilterContainer: {
-    paddingTop: DesignSystem.spacing.xs,
+    paddingTop: DesignSystem.spacing.sm,
   },
   listContent: {
     paddingHorizontal: DesignSystem.spacing.lg,
