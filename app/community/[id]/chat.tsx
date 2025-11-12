@@ -8,6 +8,7 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
+  Keyboard,
 } from 'react-native';
 import { useGlobalSearchParams } from 'expo-router';
 import { useColorScheme } from '@/hooks/use-color-scheme';
@@ -151,29 +152,35 @@ export default function CommunityChatScreen() {
   }
 
   return (
-    <KeyboardAvoidingView
-      style={[styles.container, { backgroundColor: colors.background }]}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
-    >
-      <FlatList
-        ref={flatListRef}
-        data={messages}
-        keyExtractor={(item) => item.id}
-        renderItem={renderMessage}
-        contentContainerStyle={styles.messageList}
-        ListEmptyComponent={renderEmpty}
-        onContentSizeChange={scrollToBottom}
-        onLayout={scrollToBottom}
-        keyboardShouldPersistTaps="handled"
-      />
-      <ChatInput onSend={handleSendMessage} colorScheme={colorScheme} disabled={sending} />
-    </KeyboardAvoidingView>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <KeyboardAvoidingView
+        style={styles.flex}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
+      >
+        <FlatList
+          ref={flatListRef}
+          data={messages}
+          keyExtractor={(item) => item.id}
+          renderItem={renderMessage}
+          contentContainerStyle={styles.messageList}
+          ListEmptyComponent={renderEmpty}
+          onContentSizeChange={scrollToBottom}
+          onLayout={scrollToBottom}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="interactive"
+        />
+        <ChatInput onSend={handleSendMessage} colorScheme={colorScheme} disabled={sending} />
+      </KeyboardAvoidingView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+  },
+  flex: {
     flex: 1,
   },
   centered: {

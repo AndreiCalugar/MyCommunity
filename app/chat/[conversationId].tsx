@@ -188,8 +188,8 @@ export default function DirectMessageChatScreen() {
   return (
     <KeyboardAvoidingView
       style={[styles.container, { backgroundColor: colors.background }]}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={0}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
     >
       {/* Header */}
       <View style={[styles.header, { backgroundColor: colors.background, borderBottomColor: colors.border }]}>
@@ -232,6 +232,7 @@ export default function DirectMessageChatScreen() {
         contentContainerStyle={styles.messagesContent}
         ListEmptyComponent={renderEmpty}
         onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
+        keyboardDismissMode="interactive"
       />
 
       {/* Input */}
