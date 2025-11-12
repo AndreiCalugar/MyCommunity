@@ -56,6 +56,10 @@ CREATE INDEX IF NOT EXISTS idx_conversation_participants_conversation ON public.
 ALTER TABLE public.chat_messages 
 ADD COLUMN IF NOT EXISTS conversation_id UUID REFERENCES public.conversations(id) ON DELETE CASCADE;
 
+-- Make community_id nullable (for direct messages)
+ALTER TABLE public.chat_messages 
+ALTER COLUMN community_id DROP NOT NULL;
+
 -- Create index on conversation_id
 CREATE INDEX IF NOT EXISTS idx_chat_messages_conversation ON public.chat_messages(conversation_id, created_at DESC);
 
