@@ -9,7 +9,7 @@ import {
   Alert,
   TouchableOpacity,
 } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
+import { useGlobalSearchParams } from 'expo-router';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAuthStore } from '@/lib/stores/authStore';
 import {
@@ -29,7 +29,7 @@ import { Ionicons } from '@expo/vector-icons';
 export default function TimelineScreen() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
-  const params = useLocalSearchParams<{ id: string }>();
+  const params = useGlobalSearchParams<{ id: string }>();
   const { user } = useAuthStore();
 
   const [posts, setPosts] = useState<Post[]>([]);
