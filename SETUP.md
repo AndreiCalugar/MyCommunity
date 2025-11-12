@@ -611,8 +611,90 @@ Following a Discord-inspired minimal design:
 - **Rounded corners:** 8-12px
 - **Spacing:** 4px base unit (8, 12, 16, 24, 32px)
 
+## Phase 8: Direct Messaging & Messages Inbox
+
+### Phase 8A: Direct Messaging Foundation ✅ COMPLETE
+
+**New Features:**
+- Direct messaging between users
+- User profile modal with "Message" button
+- Clickable usernames throughout the app (posts, chat, members)
+- Unified conversations system (community + direct chats)
+- Real-time message delivery
+
+**Database Changes:**
+Run these SQL scripts in order:
+```sql
+-- 1. Create conversations schema
+-- File: supabase/conversations-schema.sql
+
+-- 2. Fix RLS recursion issue
+-- File: supabase/force-fix-rls-recursion.sql
+
+-- 3. Make community_id nullable
+-- File: supabase/make-community-id-nullable.sql
+
+-- 4. (Optional) Create dummy users for testing
+-- File: supabase/seed-dummy-users.sql
+```
+
+**New API Functions:**
+- `lib/api/conversations.ts` - DM management
+- `getOrCreateDirectConversation()` - Find or create DM
+- `fetchConversations()` - Get all user conversations
+- `sendMessageToConversation()` - Send DM
+- `markConversationAsRead()` - Track read status
+
+**New Screens:**
+- `app/user/[id].tsx` - User profile modal
+- `app/chat/[conversationId].tsx` - DM chat screen
+
+**Updated Features:**
+- Community chat now uses conversations system
+- Keyboard handling fixed with `KeyboardAvoidingView`
+- Android keyboard config: `softwareKeyboardLayoutMode: "pan"`
+
+### Phase 8B: Messages Inbox ✅ COMPLETE
+
+**New Features:**
+- Unified messages inbox in profile
+- Shows all conversations (community + direct)
+- Unread message badges
+- Last message preview
+- Smart time formatting (relative time)
+- Pull-to-refresh support
+
+**New Screens:**
+- `app/messages/index.tsx` - Messages inbox
+
+**Navigation:**
+- Profile → "View All Messages" → Inbox
+- Community conversations → Community chat
+- Direct messages → DM chat
+
+**Keyboard Fix:**
+- Added `softwareKeyboardLayoutMode: "pan"` to `app.json`
+- Requires app rebuild after changes
+- Fixed duplicate `KeyboardAvoidingView` issues
+
+### What's Next: Phase 8C & 8D
+
+**Phase 8C: In-App Notifications** (Planned)
+- Notify on new messages
+- Notify on new events in joined communities
+- Badge counts on tabs
+- Notification center
+
+**Phase 8D: Deep Links & Sharing** (Planned)
+- Share communities
+- Share events
+- Deep link support
+- Open app from shared links
+
 ## Resources
 
 - [Supabase Docs](https://supabase.com/docs)
 - [Expo Router Docs](https://docs.expo.dev/router/introduction/)
 - [Zustand Docs](https://zustand.docs.pmnd.rs/)
+- [Phase 8A Summary](./PHASE-8A-SUMMARY.md)
+- [Testing Status](./TESTING-STATUS.md)
